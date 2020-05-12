@@ -5,8 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest"
+    "start": "react-native start"
   },
   "dependencies": {
     "react": "16.11.0",
@@ -14,13 +13,6 @@
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
-    "@babel/runtime": "7.9.6",
-    "babel-jest": "26.0.1",
-    "jest": "26.0.1",
-    "metro-react-native-babel-preset": "0.59.0",
-    "react-test-renderer": "16.11.0"
-  },
-  "jest": {
-    "preset": "react-native"
+    "@babel/runtime": "7.9.6"
   }
 }
