@@ -11,9 +11,9 @@ export default function App() {
     return(
         <NavigationContainer>
             <Stack.Navigator initialRouteName="登录">
-                <Stack.Screen name="登录" component={Login} />
-                <Stack.Screen name="注册" component={Register} />
-                <Stack.Screen name="主页" component={Main} />
+                <Stack.Screen name="登录" component={Login} options={{ headerShown: false }} />
+                <Stack.Screen name="注册" component={Register} options={{ headerShown: false }} />
+                <Stack.Screen name="主页" component={Main} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
   )
