@@ -1,5 +1,6 @@
-const Request = (url, data, method='get') => {
-    return fetch(url, {
+const baseUrl = 'http://192.168.154.131:8923'
+const Request = (url , data, method='get') => {
+    return fetch(baseUrl + url, {
         method,
         body: JSON.stringify(data),
         headers: {

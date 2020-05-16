@@ -3,8 +3,6 @@ import { View, Text, TextInput, PixelRatio, TouchableOpacity, Alert } from 'reac
 import styles from '../assets/css/LoginRegister';
 import Request from '../api/Request';
 
-const url = 'http://192.168.154.131:8923/v1/account'
-
 class Register extends Component {
     state = {
         email: '',
@@ -13,13 +11,12 @@ class Register extends Component {
 
     registerAccount = () => {
         const { navigation } = this.props
-        const { email } = this.state
-        const { password } = this.state
+        const { email, password } = this.state
         const data = {
             "account_id": email,
             "password": password
         }
-        Request(url, data, 'post')
+        Request('/v1/account', data, 'post')
             .then(res => {
                 if(res.ok) {
                     Alert.alert('注册成功！')
@@ -32,8 +29,7 @@ class Register extends Component {
     }
 
     checkInput = () => {
-        const { email } = this.state
-        const { password } = this.state
+        const { email, password } = this.state
         if (email == '' || password == '') {
             Alert.alert('提示：','密码或邮箱不能为空！')
         } else {
