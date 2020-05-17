@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Container, Content } from 'native-base';
 
 export default function Message() {
     return(
-        <View>
-            <Text>this is message.</Text>
-        </View>
+        <Container>
+            <Content />
+        </Container>
     )
 }

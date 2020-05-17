@@ -19,7 +19,7 @@ class Login extends Component {
         Request('/v1/login', data, 'post')
             .then(res => {
                 if(res.ok) {
-                    navigation.navigate('主页')
+                    navigation.navigate('主界面')
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message
                     Alert.alert(error)
