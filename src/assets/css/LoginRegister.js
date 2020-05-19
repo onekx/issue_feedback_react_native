@@ -8,12 +8,17 @@ export default StyleSheet.create({
         margin: 30,
     },
     userName: {
+        flexDirection: 'row',
         marginTop: 100,
-        height: 48,
+        height: 45,
         backgroundColor: '#fff',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         borderTopLeftRadius: 3,
         borderTopRightRadius: 3,
+    },
+    validateButton: {
+        marginTop: 10,
+        paddingRight: 5
     },
     passWord: {
         height: 48,

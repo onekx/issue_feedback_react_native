@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, PixelRatio, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../assets/css/LoginRegister';
 import Request from '../api/Request';
 
@@ -53,7 +53,7 @@ class Login extends Component {
                             }}
                         />
                     </View>
-                    <View style={{height: 1/PixelRatio.get(), backgroundColor:'#c4c4c4'}}/>
+                    <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}
