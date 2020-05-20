@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import styles from '../assets/css/LoginRegister';
-import Request from '../api/Request';
+import styles from '../../assets/css/LoginRegister';
+import Request from '../../api/Request';
 import TimerButton from './TimerButton';
-import DeviceStorage from './DeviceStorage';
+import DeviceStorage from '../DeviceStorage';
 
 class Register extends Component {
     state = {

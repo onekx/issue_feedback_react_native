@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Alert } from 'react-native';
-import styles from '../assets/css/LoginRegister';
-import Request from '../api/Request';
-import DeviceStorage from './DeviceStorage';
+import styles from '../../assets/css/LoginRegister';
+import Request from '../../api/Request';
+import DeviceStorage from '../DeviceStorage';
 
 export default class TimerButton extends Component {
     constructor(props) {
