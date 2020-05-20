@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, PixelRatio, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../assets/css/LoginRegister';
 import Request from '../api/Request';
-import { timing } from 'react-native-reanimated';
 import TimerButton from './TimerButton';
 
 class Register extends Component {
     state = {
         email: '',
         password: '',
+        validateCode: '',
         textColor: '#c4c4c4',
         timerCount: 180,
         opacity: 1,
-        available: false
+        acceptable: false
     }
 
     checkEmail = () => {
@@ -22,12 +22,14 @@ class Register extends Component {
         if (isRight) {
             this.setState({
                 textColor: '#0085FF',
-                opacity: 0.2
+                opacity: 0.2,
+                acceptable: true
             })
         } else {
             this.setState({
                 textColor: '#c4c4c4',
-                opacity: 1
+                opacity: 1,
+                acceptable: false
             })
         }
     }
@@ -39,11 +41,10 @@ class Register extends Component {
             "account_id": email,
             "password": password
         }
-        Request('/v1/account', data, 'post')
+        Request('/account', data, 'post')
             .then(res => {
                 if(res.ok) {
-                    Alert.alert('注册成功！')
-                    navigation.navigate('登录')
+                    navigation.navigate('主界面')
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message 
                     Alert.alert(error)
@@ -52,9 +53,9 @@ class Register extends Component {
     }
 
     checkInput = () => {
-        const { email, password } = this.state
-        if (email == '' || password == '') {
-            Alert.alert('提示：','密码或邮箱不能为空！')
+        const { password, validateCode } = this.state
+        if (validateCode == '' || password == '') {
+            Alert.alert('提示：','验证码或密码不能为空！')
         } else {
             this.registerAccount()
         }
@@ -62,7 +63,7 @@ class Register extends Component {
 
     render() {
         const { navigation } = this.props
-        const { textColor, opacity } = this.state
+        const { textColor, opacity, email, password, acceptable } = this.state
         return(
             <View style={styles.container}>
                 <View style={styles.editContainer}>
@@ -82,6 +83,9 @@ class Register extends Component {
                             timerCount = {180}
                             textColor = {textColor}
                             buttonOpacity = {opacity}
+                            email = {email}
+                            password = {password}
+                            acceptable = {acceptable}
                         /> 
                         
                     </View>
@@ -91,9 +95,14 @@ class Register extends Component {
                             style={styles.edit}
                             placeholder="验证码"
                             placeholderTextColor="#c4c4c4"
+                            onChangeText={value => {
+                                this.setState({
+                                    validateCode: value
+                                })
+                            }}
                         />
                     </View>
-                    <View style={{height: 1/PixelRatio.get(), backgroundColor:'#c4c4c4'}}/>
+                    <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}

@@ -1,4 +1,4 @@
-const baseUrl = 'http://192.168.154.131:8923'
+const baseUrl = 'http://192.168.154.131:8923/service/v1'
 const Request = (url , data, method='get') => {
     return fetch(baseUrl + url, {
         method,

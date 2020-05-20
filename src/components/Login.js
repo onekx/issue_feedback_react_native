@@ -16,7 +16,7 @@ class Login extends Component {
             "account_id": email,
             "password": password
         }
-        Request('/v1/login', data, 'post')
+        Request('/login', data, 'post')
             .then(res => {
                 if(res.ok) {
                     navigation.navigate('主界面')
