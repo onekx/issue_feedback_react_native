@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import styles from '../assets/css/LoginRegister';
 import Request from '../api/Request';
+import DeviceStorage from './DeviceStorage';
 
 export default class TimerButton extends Component {
     constructor(props) {
@@ -24,7 +25,8 @@ export default class TimerButton extends Component {
             Request('/account/send_code', data, 'post')
             .then(res => {
                 if (res.ok) {
-                    Alert.alert(res.result.validate_code) 
+                    console.log(res.result.validate_code)
+                    DeviceStorage.save("validate_token", res.result.validate_token)
                 } else {
                     Alert.alert('请检查输入是否正确！')
                 }

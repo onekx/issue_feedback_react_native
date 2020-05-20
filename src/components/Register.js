@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../assets/css/LoginRegister';
 import Request from '../api/Request';
 import TimerButton from './TimerButton';
+import DeviceStorage from './DeviceStorage';
 
 class Register extends Component {
     state = {
@@ -34,13 +35,16 @@ class Register extends Component {
         }
     }
 
-    registerAccount = () => {
+    registerAccount = async () => {
         const { navigation } = this.props
-        const { email, password } = this.state
+        const { email, password, validateCode } = this.state
+        const token = await DeviceStorage.get("validate_token")
         const data = {
             "account_id": email,
-            "password": password
-        }
+            "password": password,
+            "validate_token": token,
+            "validate_code": validateCode
+        }        
         Request('/account', data, 'post')
             .then(res => {
                 if(res.ok) {
