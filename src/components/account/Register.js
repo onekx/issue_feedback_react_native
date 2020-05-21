@@ -48,7 +48,7 @@ class Register extends Component {
         Request('/account', data, 'post')
             .then(res => {
                 if(res.ok) {
-                    navigation.navigate('主界面')
+                    navigation.navigate('登录')
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message 
                     Alert.alert(error)
