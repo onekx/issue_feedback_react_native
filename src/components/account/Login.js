@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import styles from '../../assets/css/LoginRegister';
-import Request from '../../api/Request';
+import React, { Component } from 'react'
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
+import styles from '../../assets/css/LoginRegister'
+import Request from '../../api/Request'
+import DeviceStorage from '../DeviceStorage'
 
 class Login extends Component {
     state = {
@@ -19,6 +20,8 @@ class Login extends Component {
         Request('/login', data, 'post')
             .then(res => {
                 if(res.ok) {
+                    DeviceStorage.save("token", res.result.token)
+                    DeviceStorage.save("user_id", res.result.user_id)
                     navigation.navigate('主界面')
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message
