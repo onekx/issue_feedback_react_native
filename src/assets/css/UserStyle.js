@@ -21,8 +21,13 @@ export default StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 5
     },
-    gender: {
+    male: {
         color: '#0085FF',
+        fontSize: 18,
+        marginLeft: 5
+    },
+    female: {
+        color: '#FF69B4',
         fontSize: 18,
         marginLeft: 5
     },
