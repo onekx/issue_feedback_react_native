@@ -14,10 +14,10 @@ class Login extends Component {
         const { navigation } = this.props
         switch (role) {
             case 'MANAGER':
-                console.log('管理员')
+                navigation.navigate('后台管理')
                 break;
             case 'DEVELOPER':
-                console.log('开发人员')
+                navigation.navigate('后台管理')
                 break;
             default:
                 navigation.navigate('主界面')
