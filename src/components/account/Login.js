@@ -9,9 +9,22 @@ class Login extends Component {
         email: '',
         password: ''
     }
+    
+    judgeRole = (role) => {
+        const { navigation } = this.props
+        switch (role) {
+            case 'MANAGER':
+                navigation.navigate('后台管理')
+                break;
+            case 'DEVELOPER':
+                navigation.navigate('后台管理')
+                break;
+            default:
+                navigation.navigate('主界面')
+        }
+    }
 
     loginAccount = () => {
-        const { navigation } = this.props
         const { email, password } = this.state
         const data = {
             "account_id": email,
@@ -22,7 +35,7 @@ class Login extends Component {
                 if(res.ok) {
                     DeviceStorage.save("token", res.result.token)
                     DeviceStorage.save("user_id", res.result.user_id)
-                    navigation.navigate('主界面')
+                    this.judgeRole(res.result.role_id)
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message
                     Alert.alert(error)
