@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Container, Content, Text } from 'native-base'
 import AdminHeader from './AdminHeader'
 
-class CreateProduct extends Component {
+class ManageFeedback extends Component {
     render() {
         const { navigation } = this.props
         return(
             <Container>
-                <AdminHeader title="创建产品" navigation={navigation} />
+                <AdminHeader title="管理反馈" navigation={navigation} />
                 <Content>
                     <Text>
-                        创建产品
+                        管理反馈
                     </Text>
                 </Content>
             </Container>
@@ -18,4 +18,4 @@ class CreateProduct extends Component {
     }
 }
 
-export default CreateProduct
+export default ManageFeedback
