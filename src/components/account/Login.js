@@ -9,17 +9,27 @@ class Login extends Component {
         email: '',
         password: ''
     }
+
+    clearInput = () => {
+        this.setState({
+            email: '',
+            password: ''
+        })
+    }
     
     judgeRole = (role) => {
         const { navigation } = this.props
         switch (role) {
             case 'MANAGER':
+                this.clearInput()
                 navigation.navigate('后台管理')
                 break;
             case 'DEVELOPER':
+                this.clearInput()
                 navigation.navigate('后台管理')
                 break;
             default:
+                this.clearInput()
                 navigation.navigate('主界面')
         }
     }
@@ -54,6 +64,7 @@ class Login extends Component {
 
     render() {
         const { navigation } = this.props
+        const { email, password } = this.state
         return(
             <View style={styles.container}>
                 <View style={styles.editContainer}>
@@ -67,6 +78,7 @@ class Login extends Component {
                                     email: value
                                 })
                             }}
+                            value={email}
                         />
                     </View>
                     <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
@@ -81,6 +93,7 @@ class Login extends Component {
                                     password: value
                                 })
                             }}
+                            value={password}
                         />
                     </View>                    
                     <TouchableOpacity

@@ -7,8 +7,8 @@ const Drawer = createDrawerNavigator()
 
 export default function Admin() {   
     return(
-        <Drawer.Navigator initialRouteName="最近反馈">
-            <Drawer.Screen name="最近反馈" component={ManageFeedback} />
+        <Drawer.Navigator initialRouteName="管理反馈">
+            <Drawer.Screen name="管理反馈" component={ManageFeedback} />
             <Drawer.Screen name="创建产品" component={CreateProduct} />
         </Drawer.Navigator>
     )
