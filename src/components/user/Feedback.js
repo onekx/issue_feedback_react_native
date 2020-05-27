@@ -1,24 +1,40 @@
 import React, { Component } from 'react'
 import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon } from 'native-base'
+import Request from '../../api/Request'
 
 export default class Feedback extends Component {
+    state = {
+        nickName: ''
+    }
+
+    getNickName = () => {
+        const { userId } = this.props
+        Request(`/profile/${userId}`)
+          .then(res => this.setState({
+              nickName: res.result.nickname
+          }))
+    }
+
     render() {
+        const { description, time } = this.props
+        const { nickName } = this.state
         const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png"
+        if (nickName === '') this.getNickName()
         return(
             <Card>
                 <CardItem header>
                     <Left>
                         <Thumbnail square small source={{uri: uri}} />
-                        <Text>昵称</Text>
+                        <Text>{nickName}</Text>
                     </Left>
                     <Right>
-                        <Text note>3:04</Text>
+                        <Text note>{time}</Text>
                     </Right>
                 </CardItem>
                 <CardItem button onPress={() => alert("This is Feedback Body")}>
                     <Body>
                         <Text numberOfLines={1}>
-                            这是我的反馈这是我的反馈这是我的反馈这是我的反馈这是我的反馈
+                            {description}
                         </Text>
                     </Body>
                 </CardItem>
