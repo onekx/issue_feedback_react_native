@@ -35,7 +35,7 @@ export default class User extends Component {
 
     render() {
         const { nickName } = this.state
-        this.getProfile()
+        if (nickName === '') this.getProfile()
         return(
             <Container>
                 <Content style={styles.content}>
