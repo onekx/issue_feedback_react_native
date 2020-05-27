@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Content, Text, Thumbnail, Icon } from 'native-base'
 import { View, TouchableOpacity } from 'react-native'
-import Feedback from './Feedback'
+import UserFeedback from './UserFeedback'
 import styles from '../../assets/css/UserStyle'
 import Request from '../../api/Request'
 import DeviceStorage from '../DeviceStorage'
@@ -56,7 +56,7 @@ export default class User extends Component {
                         </View>
                     </View>
                     <View style={styles.divide}/>
-                    <Feedback />
+                    <UserFeedback />
                 </Content>
             </Container>
         )
