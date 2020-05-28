@@ -1,10 +1,26 @@
 import React, { Component } from 'react'
-import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon } from 'native-base'
+import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon, Button } from 'native-base'
 import Request from '../../api/Request'
+import moment from 'moment'
 
 export default class Feedback extends Component {
     state = {
-        nickName: ''
+        nickName: '',
+        like: 0,
+        dislike: 0,
+        likeColor: 'gray',
+        dislikeColor: 'gray'
+    }
+
+    getLocalTime = () => {
+        const { time } = this.props
+        const localTime = moment.utc(time).toDate()
+        const md = moment(localTime).format('M月DD日')
+        const hm = moment(localTime).format('H:mm')
+        return {
+            month: md,
+            hours: hm
+        }
     }
 
     getNickName = () => {
@@ -15,20 +31,52 @@ export default class Feedback extends Component {
           }))
     }
 
+    vote = (opinion) => {
+        const { userId, issueId } = this.props
+        const data = {
+            "user_id": userId,
+            "opinion": opinion
+        }
+        Request(`/issue/${issueId}/vote`, data, 'put')
+          .then(res=>{
+              if(res.ok) this.changeOpinion(opinion)
+          })
+    }
+
+    changeOpinion = (opinion) => {
+        const { like, dislike } = this.state
+        opinion === 'like'
+        ? this.setState({likeColor: 'red', like: like + 1})
+        : this.setState({dislikeColor: 'red', dislike: dislike + 1})
+    }
+
+    issueStatistics = () => {
+        const { issueId } = this.props
+        Request(`/issue/${issueId}/statistics`)
+          .then((res) => this.setState({
+              dislike: res.result.dislikes,
+              like: res.result.likes
+          }))
+    }
+
+    componentDidMount() {
+        this.getNickName()
+        this.issueStatistics()
+    }
+
     render() {
-        const { description, time } = this.props
-        const { nickName } = this.state
-        const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png"
-        if (nickName === '') this.getNickName()
+        const { description } = this.props
+        const { nickName, like, dislike, likeColor, dislikeColor } = this.state
         return(
             <Card>
                 <CardItem header>
                     <Left>
-                        <Thumbnail square small source={{uri: uri}} />
+                        <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
                         <Text>{nickName}</Text>
                     </Left>
                     <Right>
-                        <Text note>{time}</Text>
+                        <Text note>{this.getLocalTime().month}</Text>
+                        <Text note>{this.getLocalTime().hours}</Text>
                     </Right>
                 </CardItem>
                 <CardItem button onPress={() => alert("This is Feedback Body")}>
@@ -40,10 +88,14 @@ export default class Feedback extends Component {
                 </CardItem>
                 <CardItem footer>
                     <Left>
-                        <Icon type="AntDesign" name="like1" style={{fontSize: 20, color: 'red'}} />
-                        <Text>100</Text>
-                        <Icon type="AntDesign" name="dislike1" style={{fontSize: 20, color: 'gray', marginLeft: 10}} />
-                        <Text>50</Text>
+                    <Button iconLeft transparent onPress={()=>this.vote('like')}>
+                        <Icon type="AntDesign" name="like1" style={{fontSize: 20, color: likeColor}} />
+                        <Text style={{marginLeft: -10, color: likeColor}}>{like}</Text>
+                    </Button>
+                    <Button iconLeft transparent onPress={()=>this.vote('dislike')}>
+                        <Icon type="AntDesign" name="dislike1" style={{fontSize: 20, color: dislikeColor}} />
+                        <Text style={{marginLeft: -10, color: dislikeColor}}>{dislike}</Text>
+                    </Button>
                     </Left>
                 </CardItem>
             </Card>
