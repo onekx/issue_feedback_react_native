@@ -29,6 +29,7 @@ export default class Home extends Component {
                     description={value.description}
                     time={value.created_at}
                     userId={value.owner_id}
+                    issueId={value.issue_id}
                 />
             )
         })
@@ -36,7 +37,7 @@ export default class Home extends Component {
     }
 
     getFeedbacks = () => {
-        const url = '/issue/product/4ef1a91b-88f4-4d22-89a1-3d6f1b9345b1?status=opening'
+        const url = '/issue/product/d98431d9-167b-4c34-88a0-be6922777494?status=opening'
         Request(url)
           .then(res=>this.setState({
               count: res.result.count,
