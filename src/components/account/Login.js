@@ -30,7 +30,7 @@ class Login extends Component {
                 break;
             default:
                 this.clearInput()
-                navigation.navigate('主界面')
+                navigation.navigate('主页')
         }
     }
 

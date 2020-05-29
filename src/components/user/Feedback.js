@@ -38,25 +38,52 @@ export default class Feedback extends Component {
             "opinion": opinion
         }
         Request(`/issue/${issueId}/vote`, data, 'put')
-          .then(res=>{
-              if(res.ok) this.changeOpinion(opinion)
-          })
+            .then(res=>{
+                if(res.ok) {
+                    this.issueStatistics()
+                    this.changeOpinion(res.result.opinion)
+                }
+            })
     }
 
     changeOpinion = (opinion) => {
-        const { like, dislike } = this.state
-        opinion === 'like'
-        ? this.setState({likeColor: 'red', like: like + 1})
-        : this.setState({dislikeColor: 'red', dislike: dislike + 1})
+        switch (opinion) {
+            case 'like':
+                this.setState({
+                    likeColor: 'red',
+                    dislikeColor: 'gray'
+                })
+                break
+            case 'dislike':
+                this.setState({
+                    likeColor: 'gray',
+                    dislikeColor: 'red'
+                })
+                break
+            default:
+                this.setState({
+                    likeColor: 'gray',
+                    dislikeColor: 'gray'
+                })
+        }
     }
 
     issueStatistics = () => {
         const { issueId } = this.props
         Request(`/issue/${issueId}/statistics`)
-          .then((res) => this.setState({
-              dislike: res.result.dislikes,
-              like: res.result.likes
-          }))
+          .then((res) => {
+              if (res.ok) {
+                this.setState({
+                    dislike: res.result.dislikes,
+                    like: res.result.likes
+                })
+              } else {
+                this.setState({
+                    dislike: 0,
+                    like: 0
+                })
+              }
+          })
     }
 
     componentDidMount() {
