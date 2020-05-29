@@ -40,15 +40,9 @@ export default class SubmitFeedback extends Component {
         return names
     }
 
-    clearInput = () => {
-        this.setState({
-            title: '',
-            description: ''
-        })
-    }
-
     submit = async () => {
         const { productsId, title, description, selected } = this.state
+        const { navigate } = this.props.navigation
         const id = await DeviceStorage.get('user_id')
         const data = {
             "product_id": productsId[selected],
@@ -59,8 +53,7 @@ export default class SubmitFeedback extends Component {
         Request('/issue', data, 'post')
         .then(res=> {
             if (res.ok) {
-                Alert,alert('提交成功！')
-                this.clearInput()
+                navigate('主页')
                 DeviceEventEmitter.emit('refresh',true)
             }
             else Alert.alert('提交失败!')
@@ -98,7 +91,6 @@ export default class SubmitFeedback extends Component {
                                     title: value
                                 })
                         }}
-                        value={title}
                         />
                     </Item>
                     <Item stackedLabel last>
@@ -108,7 +100,6 @@ export default class SubmitFeedback extends Component {
                                     description: value
                                 })
                         }}
-                        value={description}
                         />
                     </Item>
                 </Form>
