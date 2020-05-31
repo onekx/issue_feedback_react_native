@@ -61,7 +61,7 @@ export default class SubmitFeedback extends Component {
     }
 
     render() {
-        const { productsName, title, description } = this.state
+        const { productsName, selected } = this.state
         if (productsName.length === 0) this.getProducts()
         return(
             <Container>
@@ -75,7 +75,7 @@ export default class SubmitFeedback extends Component {
                             note
                             mode="dropdown"
                             style={{ width: 130 }}
-                            selectedValue={this.state.selected}
+                            selectedValue={selected}
                             onValueChange={this.onValueChange}
                         >
                             {this._renderItems()}

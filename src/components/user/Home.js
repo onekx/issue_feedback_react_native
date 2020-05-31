@@ -86,7 +86,6 @@ export default class Home extends Component {
         const { count, nickName } = this.state
         const { navigation } = this.props
         console.disableYellowBox = true
-        if (count === 0) this.getFeedbacks()
         return(
             <Container>
                 <Modal
@@ -121,8 +120,13 @@ export default class Home extends Component {
                 </Modal>
                 <Header style={{backgroundColor: '#FFF'}}>
                     <Left>
-                        <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
-                        
+                        <Button transparent
+                            onPress={() => {
+                                navigation.navigate("个人资料")
+                            }}
+                        >
+                            <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
+                        </Button>
                     </Left>
                     <Body>
                         <View style={{flexDirection: 'row'}}>
@@ -133,7 +137,7 @@ export default class Home extends Component {
                     <Right>
                         <Button transparent
                             onPress={() => {
-                                this.setModalVisible(true);
+                                this.setModalVisible(true)
                             }}
                         >
                             <Icon type="AntDesign" name='logout' style={{color: 'gray'}} />

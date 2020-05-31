@@ -1,0 +1,108 @@
+import React, { Component } from 'react'
+import { Container, Header, Content, List, ListItem, Text, Input, Button,
+Left, Body, Icon, Title, Form } from 'native-base'
+import { Alert, Picker } from 'react-native'
+import Request from '../../api/Request'
+import DeviceStorage from '../DeviceStorage'
+
+export default class Profile extends Component {
+    state = {
+        nickName: '',
+        gender: 1,
+        selected: "female",
+        inputNickname: ''
+    }
+
+    getProfile = async () => {
+        const userId = await DeviceStorage.get("user_id")
+        Request(`/profile/${userId}`)
+            .then(res => {
+                this.setState({
+                nickName: res.result.nickname,
+                gender: res.result.gender
+            })
+            if(this.state.gender === 0) {
+                this.setState({
+                    selected: 'male'
+                })
+            }
+        })
+    }
+
+    setNickName = async () => {
+        const { inputNickname } = this.state
+        const userId = await DeviceStorage.get("user_id")
+        const data = {"nickname": inputNickname}
+        Request(`/profile/${userId}`, data, 'put')
+            .then(res=>{if(res.ok) Alert.alert('修改成功！')})
+    }
+
+    setGender = async (value) => {
+        this.setState({selected: value})
+        const userId = await DeviceStorage.get("user_id")
+        const data = { "gender": 1 }
+        if (this.state.selected === 'male') data.gender=0
+        Request(`/profile/${userId}`, data, 'put')
+            .then(res=>{if(res.ok) Alert.alert('修改成功！')})
+    }
+
+    componentDidMount() {
+        this.getProfile()
+    }
+
+    render() {
+        const { navigate } = this.props.navigation
+        const { selected, nickName } = this.state
+        return (
+            <Container>
+                <Header>
+                    <Left>
+                        <Button transparent
+                            onPress={()=>navigate('主页')}
+                        >
+                            <Icon type="AntDesign" name='arrowleft' />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title>编辑资料</Title>
+                    </Body>
+                </Header>
+                <Content>
+                    <List>
+                        <ListItem>
+                            <Text>昵称：</Text>
+                            <Input 
+                                placeholder={nickName}
+                                onChangeText = {value => 
+                                    this.setState({
+                                        inputNickname: value
+                                    })}
+                                style={{borderBottomWidth: 1,borderBottomColor: '#000'}} />
+                            <Button 
+                                style={{height: 30}}
+                                onPress={()=>this.setNickName()}    
+                            >
+                                <Text>确认</Text>
+                            </Button>
+                        </ListItem>
+                        <ListItem>
+                            <Text>性别：</Text>
+                            <Form>
+                                <Picker
+                                    note
+                                    mode="dialog"
+                                    style={{ width: 50, marginLeft: 50 }}
+                                    selectedValue={selected}
+                                    onValueChange={this.setGender}
+                                >
+                                    <Picker.Item label="女" value="female" />
+                                    <Picker.Item label="男" value="male" />
+                                </Picker>
+                            </Form>
+                        </ListItem>
+                    </List>
+                </Content>
+            </Container>
+        )
+    }
+}
