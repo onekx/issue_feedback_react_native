@@ -15,20 +15,12 @@ export default class Feedback extends Component {
     getLocalTime = () => {
         const { time } = this.props
         const localTime = moment.utc(time).toDate()
-        const md = moment(localTime).format('M月DD日')
+        const md = moment(localTime).format('M月D日')
         const hm = moment(localTime).format('H:mm')
         return {
             month: md,
             hours: hm
         }
-    }
-
-    getNickName = () => {
-        const { userId } = this.props
-        Request(`/profile/${userId}`)
-          .then(res => this.setState({
-              nickName: res.result.nickname
-          }))
     }
 
     vote = (opinion) => {
@@ -40,7 +32,6 @@ export default class Feedback extends Component {
         Request(`/issue/${issueId}/vote`, data, 'put')
             .then(res=>{
                 if(res.ok) {
-                    this.issueStatistics()
                     this.changeOpinion(res.result.opinion)
                 }
             })
@@ -68,45 +59,29 @@ export default class Feedback extends Component {
         }
     }
 
-    issueStatistics = () => {
-        const { issueId } = this.props
-        Request(`/issue/${issueId}/statistics`)
-          .then((res) => {
-              if (res.ok) {
-                this.setState({
-                    dislike: res.result.dislikes,
-                    like: res.result.likes
-                })
-              } else {
-                this.setState({
-                    dislike: 0,
-                    like: 0
-                })
-              }
-          })
-    }
-
-    componentDidMount() {
-        this.getNickName()
-        this.issueStatistics()
-    }
-
     render() {
-        const { description } = this.props
-        const { nickName, like, dislike, likeColor, dislikeColor } = this.state
+        const { description, navigation, userName, likes, dislikes, issueId } = this.props
+        const { likeColor, dislikeColor } = this.state
         return(
             <Card>
                 <CardItem header>
                     <Left>
                         <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
-                        <Text>{nickName}</Text>
+                        <Text>{userName}</Text>
                     </Left>
                     <Right>
                         <Text note>{this.getLocalTime().month}</Text>
                         <Text note>{this.getLocalTime().hours}</Text>
                     </Right>
                 </CardItem>
-                <CardItem button onPress={() => alert("This is Feedback Body")}>
+                <CardItem button onPress={() => 
+                    navigation.navigate('反馈详情', {
+                        name: userName,
+                        md: this.getLocalTime().month,
+                        hm: this.getLocalTime().hours,
+                        content: description,
+                        id: issueId
+                })}>
                     <Body>
                         <Text numberOfLines={1}>
                             {description}
@@ -117,11 +92,11 @@ export default class Feedback extends Component {
                     <Left>
                     <Button iconLeft transparent onPress={()=>this.vote('like')}>
                         <Icon type="AntDesign" name="like1" style={{fontSize: 20, color: likeColor}} />
-                        <Text style={{marginLeft: -10, color: likeColor}}>{like}</Text>
+                        <Text style={{marginLeft: -10, color: likeColor}}>{likes}</Text>
                     </Button>
                     <Button iconLeft transparent onPress={()=>this.vote('dislike')}>
                         <Icon type="AntDesign" name="dislike1" style={{fontSize: 20, color: dislikeColor}} />
-                        <Text style={{marginLeft: -10, color: dislikeColor}}>{dislike}</Text>
+                        <Text style={{marginLeft: -10, color: dislikeColor}}>{dislikes}</Text>
                     </Button>
                     </Left>
                 </CardItem>

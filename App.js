@@ -7,6 +7,7 @@ import Home from './src/components/user/Home'
 import SubmitFeedback from './src/components/user/SubmitFeedback'
 import Admin from './src/components/admin/Admin'
 import Profile from './src/components/user/Profile'
+import FeedbackDetails from './src/components/user/FeedbackDetails'
 
 const Stack = createStackNavigator()
 
@@ -20,6 +21,7 @@ export default function App() {
                 <Stack.Screen name="提交反馈" component={SubmitFeedback} />
                 <Stack.Screen name="后台管理" component={Admin} />
                 <Stack.Screen name="个人资料" component={Profile} />
+                <Stack.Screen name="反馈详情" component={FeedbackDetails} />
             </Stack.Navigator>
         </NavigationContainer>
   )
