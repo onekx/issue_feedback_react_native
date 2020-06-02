@@ -59,14 +59,18 @@ export default class Home extends Component {
 
     _renderFeedback = () => {
         const { feedbackArr } = this.state
+        const { navigation } = this.props
         const arr = []
         feedbackArr.forEach(value => {
             arr.push(
                 <Feedback 
                     description={value.description}
                     time={value.created_at}
-                    userId={value.owner_id}
                     issueId={value.issue_id}
+                    userName={value.owner.nickname}
+                    likes={value.likes}
+                    dislikes={value.dislikes}
+                    navigation={navigation}
                 />
             )
         })
@@ -74,7 +78,7 @@ export default class Home extends Component {
     }
 
     getFeedbacks = () => {
-        const url = '/issue/product/d98431d9-167b-4c34-88a0-be6922777494?status=opening'
+        const url = '/issue/product/05956698-268e-4215-b56a-8b496a6ca7a1?status=opening'
         Request(url)
           .then(res=>this.setState({
               count: res.result.count,
@@ -86,6 +90,7 @@ export default class Home extends Component {
         const { count, nickName } = this.state
         const { navigation } = this.props
         console.disableYellowBox = true
+        if(count === 0) this.getFeedbacks()
         return(
             <Container>
                 <Modal
