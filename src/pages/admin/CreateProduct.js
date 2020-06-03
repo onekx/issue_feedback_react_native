@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Container, Content, Form, Item, Input, Label } from 'native-base'
 import { TouchableOpacity, Text, StyleSheet, View, Alert } from 'react-native'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
-import AdminHeader from './AdminHeader'
+import DeviceStorage from '../../utils/DeviceStorage'
+import AdminHeader from '../../components/AdminHeader'
 
 class CreateProduct extends Component {
     state = {

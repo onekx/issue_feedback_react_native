@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Content, Text } from 'native-base'
-import AdminHeader from './AdminHeader'
+import AdminHeader from '../../components/AdminHeader'
 
 class ManageFeedback extends Component {
     render() {

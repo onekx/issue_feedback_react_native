@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon, Button } from 'native-base'
-import Request from '../../api/Request'
+import Request from '../api/Request'
 import moment from 'moment'
 
 export default class Feedback extends Component {
@@ -66,7 +66,7 @@ export default class Feedback extends Component {
             <Card>
                 <CardItem header>
                     <Left>
-                        <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
+                        <Thumbnail square small source={require('../images/defaultAvatar.jpg')} />
                         <Text>{userName}</Text>
                     </Left>
                     <Right>
@@ -75,7 +75,7 @@ export default class Feedback extends Component {
                     </Right>
                 </CardItem>
                 <CardItem button onPress={() => 
-                    navigation.navigate('反馈详情', {
+                    navigation.navigate('feedbackDetails', {
                         name: userName,
                         md: this.getLocalTime().month,
                         hm: this.getLocalTime().hours,

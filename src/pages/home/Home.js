@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Container, Content, Header, Fab, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
 import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableHighlight } from 'react-native'
-import Feedback from './Feedback'
+import Feedback from '../../components/Feedback'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 export default class Home extends Component {
     state = {
@@ -17,7 +17,7 @@ export default class Home extends Component {
     }
 
     setModalVisible = (visible) => {
-        this.setState({ modalVisible: visible });
+        this.setState({ modalVisible: visible })
     }
 
     componentDidMount() {
@@ -54,7 +54,7 @@ export default class Home extends Component {
         const { navigation } = this.props
         DeviceStorage.delete('token')
         DeviceStorage.delete('user_id')
-        navigation.navigate('登录')
+        navigation.navigate('login')
     }
 
     _renderFeedback = () => {
@@ -78,7 +78,7 @@ export default class Home extends Component {
     }
 
     getFeedbacks = () => {
-        const url = '/issue/product/05956698-268e-4215-b56a-8b496a6ca7a1?status=opening'
+        const url = '/issue/product/83f9e13b-288d-4e83-81e6-9560fba761fc?status=opening'
         Request(url)
           .then(res=>this.setState({
               count: res.result.count,
@@ -105,17 +105,12 @@ export default class Home extends Component {
                             <Text style={{alignSelf: 'center'}}>确认退出？</Text>
                             <View style={{flexDirection: 'row',justifyContent: 'space-around'}}>
                             <TouchableHighlight
-                                onPress={() => {
-                                    this.setModalVisible(!this.state.modalVisible);
-                                }}
+                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
                                 <Text style={{backgroundColor: '#fff'}}>否</Text>
                             </TouchableHighlight>
                             <TouchableHighlight
-                                onPress={() => {
-                                    this.props.navigation.navigate('登录')
-                                }}
-                                
+                                onPress={() => navigation.navigate('login')}
                             >
                                 <Text style={{backgroundColor: '#fff'}}>是</Text>
                             </TouchableHighlight>
@@ -126,11 +121,9 @@ export default class Home extends Component {
                 <Header style={{backgroundColor: '#FFF'}}>
                     <Left>
                         <Button transparent
-                            onPress={() => {
-                                navigation.navigate("个人资料")
-                            }}
+                            onPress={() => navigation.navigate("profile")}
                         >
-                            <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
+                            <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                         </Button>
                     </Left>
                     <Body>
@@ -141,16 +134,14 @@ export default class Home extends Component {
                     </Body>
                     <Right>
                         <Button transparent
-                            onPress={() => {
-                                this.setModalVisible(true)
-                            }}
+                            onPress={() => this.setModalVisible(true)}
                         >
                             <Icon type="AntDesign" name='logout' style={{color: 'gray'}} />
                         </Button>
                     </Right>
                 </Header>
                 <Content padder>
-                    <Image source={ require('../../assets/images/home.jpg') } 
+                    <Image source={ require('../../images/home.jpg') } 
                         style={{ width: 340, height: 125, borderRadius: 10 }} 
                     />
                     {this._renderFeedback()}
@@ -158,7 +149,7 @@ export default class Home extends Component {
                 <Fab
                     style={{ backgroundColor: '#5067FF' }}
                     position="bottomRight"
-                    onPress={()=>navigation.navigate('提交反馈')}
+                    onPress={()=>navigation.navigate('submitFeedback')}
                 >
                     <Icon type="FontAwesome" name="pencil" />
                 </Fab>

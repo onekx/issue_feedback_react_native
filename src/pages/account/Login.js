@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
-import styles from '../../assets/css/LoginRegister'
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 class Login extends Component {
     state = {
@@ -22,15 +21,15 @@ class Login extends Component {
         switch (role) {
             case 'MANAGER':
                 this.clearInput()
-                navigation.navigate('后台管理')
+                navigation.navigate('adminNavigation')
                 break;
             case 'DEVELOPER':
                 this.clearInput()
-                navigation.navigate('后台管理')
+                navigation.navigate('adminNavigation')
                 break;
             default:
                 this.clearInput()
-                navigation.navigate('主页')
+                navigation.navigate('home')
         }
     }
 
@@ -81,7 +80,7 @@ class Login extends Component {
                             value={email}
                         />
                     </View>
-                    <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
+                    <View style={styles.divide}/>
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}
@@ -111,7 +110,7 @@ class Login extends Component {
                         <View>
                             <TouchableOpacity
                                 onPress={()=>{
-                                    navigation.navigate('注册')
+                                    navigation.navigate('registration')
                                 }}
                             >
                                 <Text style={{color: '#0085FF'}}>立即注册</Text>
@@ -123,5 +122,63 @@ class Login extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    editContainer: {
+        margin: 30,
+    },
+    userName: {
+        flexDirection: 'row',
+        marginTop: 100,
+        height: 45,
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+    },
+    validateButton: {
+        marginTop: 10,
+        paddingRight: 5
+    },
+    passWord: {
+        height: 48,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3,
+    },
+    edit: {
+        height: 40,
+        fontSize: 13,
+        backgroundColor: '#fff',
+        paddingLeft: 15,
+    },
+    login: {
+        marginTop: 15,
+        height: 35,
+        backgroundColor: '#0085FF',
+        borderRadius: 3,
+        
+    },
+    text: {
+        fontSize: 15,
+        color: '#fff',
+        lineHeight: 35,
+        textAlign: 'center',
+        letterSpacing: 3,
+        fontWeight: 'normal'
+    },
+    registWord: {
+        flexDirection: 'row',
+        marginTop: 10
+    },
+    divide: {
+        height: 1,
+        backgroundColor:'#c4c4c4'
+    }
+})
 
 export default Login

@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import styles from '../../assets/css/LoginRegister';
-import Request from '../../api/Request';
-import TimerButton from './TimerButton';
-import DeviceStorage from '../DeviceStorage';
+import React, { Component } from 'react'
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
+import Request from '../../api/Request'
+import TimerButton from '../../components/TimerButton'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 class Register extends Component {
     state = {
@@ -48,7 +47,7 @@ class Register extends Component {
         Request('/account', data, 'post')
             .then(res => {
                 if(res.ok) {
-                    navigation.navigate('登录')
+                    navigation.navigate('login')
                 } else {
                     const error = res.error_type == undefined ? '邮箱格式错误！' : res.message 
                     Alert.alert(error)
@@ -93,7 +92,7 @@ class Register extends Component {
                         /> 
                         
                     </View>
-                    <View style={{height: .5,  backgroundColor:'#c4c4c4'}}/>
+                    <View style={styles.divide1}/>
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}
@@ -106,7 +105,7 @@ class Register extends Component {
                             }}
                         />
                     </View>
-                    <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
+                    <View style={styles.divide2}/>
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}
@@ -135,7 +134,7 @@ class Register extends Component {
                         <View>
                             <TouchableOpacity
                                 onPress={()=>{
-                                    navigation.navigate('登录')
+                                    navigation.navigate('login')
                                 }}
                             >
                                 <Text style={{color: '#0085FF'}}>立即登录</Text>
@@ -147,5 +146,67 @@ class Register extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    editContainer: {
+        margin: 30,
+    },
+    userName: {
+        flexDirection: 'row',
+        marginTop: 100,
+        height: 45,
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+    },
+    validateButton: {
+        marginTop: 10,
+        paddingRight: 5
+    },
+    passWord: {
+        height: 48,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3,
+    },
+    edit: {
+        height: 40,
+        fontSize: 13,
+        backgroundColor: '#fff',
+        paddingLeft: 15,
+    },
+    login: {
+        marginTop: 15,
+        height: 35,
+        backgroundColor: '#0085FF',
+        borderRadius: 3,
+        
+    },
+    text: {
+        fontSize: 15,
+        color: '#fff',
+        lineHeight: 35,
+        textAlign: 'center',
+        letterSpacing: 3,
+        fontWeight: 'normal'
+    },
+    registWord: {
+        flexDirection: 'row',
+        marginTop: 10
+    },
+    divide1: {
+        height: .5,
+        backgroundColor:'#c4c4c4'
+    },
+    divide2: {
+        height: 1,
+        backgroundColor:'#c4c4c4'
+    }
+})
 
 export default Register
