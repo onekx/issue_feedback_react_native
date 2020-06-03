@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Container, Content, ListItem, Text, Left, Body, Card, CardItem, Thumbnail, Icon, Button, Right } from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
 import moment from 'moment'
 
 export default class FeedbackDetails extends Component {
@@ -35,7 +35,7 @@ export default class FeedbackDetails extends Component {
                 <Card transparent>
                     <CardItem>
                         <Left>
-                            <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
+                            <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                             <Body>
                                 <Text>{comment.owner.nickname}</Text>
                                 <Text note>{`${this.getLocalTime(comment.created_at).month}   ${this.getLocalTime(comment.created_at).hours}`}</Text>
@@ -87,12 +87,13 @@ export default class FeedbackDetails extends Component {
     }
 
     render() {
-        const { params } = this.props.route
+        const { route, navigation } = this.props
+        const { modalVisible } = this.state
         return(
             <Container>
                 <Modal
                     transparent={true}
-                    visible={this.state.modalVisible}
+                    visible={modalVisible}
                     onRequestClose={() => {
                         alert("弹窗将关闭")
                     }}
@@ -101,8 +102,8 @@ export default class FeedbackDetails extends Component {
                         onPress={()=>this.setState({modalVisible: false})}
                     >
                     <View style={styles.modalContainer}>
-                        <View style={{height: 150, backgroundColor: '#fff'}}>
-                            <TextInput 
+                        <View style={styles.content}>
+                            <TextInput
                                 multiline
                                 autoFocus
                                 onChangeText={value => this.setState({
@@ -122,14 +123,14 @@ export default class FeedbackDetails extends Component {
                     <Card transparent>
                         <CardItem>
                             <Left>
-                                <Thumbnail square small source={require('../../assets/images/defaultAvatar.jpg')} />
+                                <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                                 <Body>
-                                    <Text>{params.name}</Text>
-                                    <Text note>{`${params.md}    ${params.hm}`}</Text>
+                                    <Text>{route.params.name}</Text>
+                                    <Text note>{`${route.params.md}    ${route.params.hm}`}</Text>
                                 </Body>
                             </Left>
                             <Right>
-                                <Button transparent onPress={()=>this.props.navigation.goBack()}>
+                                <Button transparent onPress={()=>navigation.goBack()}>
                                     <Icon type="AntDesign" name="back" style={{fontSize: 20}} />
                                 </Button>
                             </Right>
@@ -137,7 +138,7 @@ export default class FeedbackDetails extends Component {
                         <CardItem style={{marginTop: -10}}>
                             <Body>
                                 <Text style={{color: '#2c2c2c'}}>
-                                     {params.content}
+                                     {route.params.content}
                                 </Text>
                             </Body>
                         </CardItem>
@@ -167,6 +168,10 @@ const styles = StyleSheet.create({
         bottom: 0,
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+    modalContent: {
+        height: 150,
+        backgroundColor: '#fff'
     },
     sendBtn: {
         height: 30,

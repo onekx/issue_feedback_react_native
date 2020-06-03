@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Header, Content, List, ListItem, Text, Input, Button,
-Left, Body, Icon, Title, Form } from 'native-base'
 import { Alert, Picker } from 'react-native'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
+import { Container, Header, Content, List, ListItem, Text, Input, Button,Left, Body, Icon, Title, Form } from 'native-base'
 
 export default class Profile extends Component {
     state = {
@@ -58,7 +57,7 @@ export default class Profile extends Component {
                 <Header>
                     <Left>
                         <Button transparent
-                            onPress={()=>navigate('主页')}
+                            onPress={()=>navigate('home')}
                         >
                             <Icon type="AntDesign" name='arrowleft' />
                         </Button>

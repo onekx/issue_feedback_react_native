@@ -1,11 +1,11 @@
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import ManageFeedback from './ManageFeedback'
-import CreateProduct from './CreateProduct'
+import ManageFeedback from '../pages/admin/ManageFeedback'
+import CreateProduct from '../pages/admin/CreateProduct'
 
 const Drawer = createDrawerNavigator()
 
-export default function Admin() {   
+const Admin = () => {   
     return(
         <Drawer.Navigator initialRouteName="管理反馈">
             <Drawer.Screen name="管理反馈" component={ManageFeedback} />
@@ -13,3 +13,5 @@ export default function Admin() {
         </Drawer.Navigator>
     )
 }
+
+export default Admin

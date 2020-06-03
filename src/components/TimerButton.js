@@ -1,18 +1,14 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Alert } from 'react-native';
-import styles from '../../assets/css/LoginRegister';
-import Request from '../../api/Request';
-import DeviceStorage from '../DeviceStorage';
+import React, { Component } from 'react'
+import { Text, View, TouchableOpacity, Alert } from 'react-native'
+import Request from '../api/Request'
+import DeviceStorage from '../utils/DeviceStorage'
 
 export default class TimerButton extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            timerCount: this.props.timerCount,
-            timerTitle: '获取验证码',
-            counting: false,
-            selfEnable: true,
-        };
+    state = {
+        timerCount: this.props.timerCount,
+        timerTitle: '获取验证码',
+        counting: false,
+        selfEnable: true,
     }
 
     // 获取验证码
@@ -31,16 +27,12 @@ export default class TimerButton extends Component {
                     Alert.alert('请检查输入是否正确！')
                 }
             })
-        } else {
-            return
         }
-            
-       
     }
 
     countDownAction = () => {
         const { timerCount } = this.state
-        const codeTime = timerCount;
+        const codeTime = timerCount
         this.interval = setInterval(() => {
             const timer = this.state.timerCount - 1
             if (timer === 0) {
@@ -92,7 +84,7 @@ export default class TimerButton extends Component {
                     this.getCaptcha()
                 }}
             >
-                <View style={styles.validateButton}>
+                <View style={{marginTop: 10,paddingRight: 5}}>
                     <Text
                         style={{color: ((!counting && selfEnable) ? textColor : '#c4c4c4')}}>
                         {timerTitle}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Picker } from 'native-base'
 import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
 import Request from '../../api/Request'
-import DeviceStorage from '../DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 export default class SubmitFeedback extends Component {
     state = {
@@ -53,7 +53,7 @@ export default class SubmitFeedback extends Component {
         Request('/issue', data, 'post')
         .then(res=> {
             if (res.ok) {
-                navigate('主页')
+                navigate('home')
                 DeviceEventEmitter.emit('refresh',true)
             }
             else Alert.alert('提交失败!')
@@ -113,9 +113,8 @@ export default class SubmitFeedback extends Component {
                         </TouchableOpacity>
                     </View>
             </Content>
-          </Container>
-        )
-    }
+        </Container>
+    )}
 }
 
 const styles = StyleSheet.create({
