@@ -3,7 +3,7 @@ import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon, Button } from
 import Request from '../api/Request'
 import moment from 'moment'
 
-export default class Feedback extends Component {
+export default class FeedbackCard extends Component {
     state = {
         nickName: '',
         like: 0,

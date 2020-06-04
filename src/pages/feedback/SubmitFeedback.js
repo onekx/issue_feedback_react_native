@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Picker } from 'native-base'
+import { 
+Container, Content, ListItem, Label, Left, Input, Right,
+Item, Form, Picker, Header, Icon, Button, Body, Title 
+} from 'native-base'
 import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
 import Request from '../../api/Request'
 import DeviceStorage from '../../utils/DeviceStorage'
@@ -11,30 +14,30 @@ export default class SubmitFeedback extends Component {
         productsId: [],
         title: '',
         description: ''
-      }
+    }
 
     onValueChange = (value) => {
-      this.setState({
-        selected: value
-      })
+        this.setState({
+            selected: value
+        })
     }
 
     getProducts = () => {
         Request('/products')
-        .then(res=>{
-            const nameArr = res.result.products.map(value=>(value.name))
-            const idArr = res.result.products.map(value=>(value.product_id))
-            this.setState({
-                productsName: nameArr,
-                productsId: idArr
+            .then(res => {
+                const nameArr = res.result.products.map(value => (value.name))
+                const idArr = res.result.products.map(value => (value.product_id))
+                this.setState({
+                    productsName: nameArr,
+                    productsId: idArr
+                })
             })
-        })
     }
 
     _renderItems = () => {
         const { productsName } = this.state
         const names = []
-        productsName.forEach((name, index)=>{
+        productsName.forEach((name, index) => {
             names.push(<Picker.Item label={name} value={index} />)
         })
         return names
@@ -42,7 +45,7 @@ export default class SubmitFeedback extends Component {
 
     submit = async () => {
         const { productsId, title, description, selected } = this.state
-        const { navigate } = this.props.navigation
+        const { navigation } = this.props
         const id = await DeviceStorage.get('user_id')
         const data = {
             "product_id": productsId[selected],
@@ -51,59 +54,73 @@ export default class SubmitFeedback extends Component {
             "description": description
         }
         Request('/issue', data, 'post')
-        .then(res=> {
-            if (res.ok) {
-                navigate('home')
-                DeviceEventEmitter.emit('refresh',true)
-            }
-            else Alert.alert('提交失败!')
-        })
+            .then(res => {
+                if (res.ok) {
+                    navigation.goBack()
+                    DeviceEventEmitter.emit('refresh', true)
+                }
+                else Alert.alert('提交失败!')
+            })
     }
 
     render() {
         const { productsName, selected } = this.state
+        const { navigation } = this.props
         if (productsName.length === 0) this.getProducts()
-        return(
+        return (
             <Container>
-            <Content>
-                <ListItem>
-                    <Left>
-                        <Text style={styles.leftTitle}>选择产品:</Text>
-                    </Left>
-                    <Right style={{marginRight: 10}}>
-                        <Picker
-                            note
-                            mode="dropdown"
-                            style={{ width: 130 }}
-                            selectedValue={selected}
-                            onValueChange={this.onValueChange}
-                        >
-                            {this._renderItems()}
-                        </Picker>
-                    </Right>
-                </ListItem>
-                <View style={styles.divider}/>
-                <Form>
-                    <Item stackedLabel>
-                        <Label>标题</Label>
-                        <Input onChangeText = {value => {
+                <Content>
+                    <Header>
+                        <Left>
+                            <Button
+                                transparent
+                                onPress={() => navigation.goBack()}>
+                                <Icon type="AntDesign" name='arrowleft' />
+                            </Button>
+                        </Left>
+                        <Body>
+                            <Title>提交反馈</Title>
+                        </Body>
+                        <Right />
+                    </Header>
+                    <ListItem>
+                        <Left>
+                            <Text style={styles.leftTitle}>选择产品:</Text>
+                        </Left>
+                        <Right style={{ marginRight: 10 }}>
+                            <Picker
+                                note
+                                mode="dropdown"
+                                style={{ width: 130 }}
+                                selectedValue={selected}
+                                onValueChange={this.onValueChange}
+                            >
+                                {this._renderItems()}
+                            </Picker>
+                        </Right>
+                    </ListItem>
+                    <View style={styles.divider} />
+                    <Form>
+                        <Item stackedLabel>
+                            <Label>标题</Label>
+                            <Input onChangeText={value => {
                                 this.setState({
                                     title: value
                                 })
-                        }}
-                        />
-                    </Item>
-                    <Item stackedLabel last>
-                        <Label>描述</Label>
-                        <Input onChangeText = {value => {
+                            }}
+                            />
+                        </Item>
+                        <Item stackedLabel last>
+                            <Label>描述</Label>
+                            <Input onChangeText={value => {
                                 this.setState({
                                     description: value
                                 })
-                        }}
-                        />
-                    </Item>
-                </Form>
-                <View style={styles.buttonView}>
+                            }}
+                            />
+                        </Item>
+                    </Form>
+                    <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.createButton}
                             onPress={this.submit}
                         >
@@ -112,9 +129,10 @@ export default class SubmitFeedback extends Component {
                             </Text>
                         </TouchableOpacity>
                     </View>
-            </Content>
-        </Container>
-    )}
+                </Content>
+            </Container>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -139,7 +157,7 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: .5,
-        backgroundColor:'#c4c4c4'
+        backgroundColor: '#c4c4c4'
     },
     leftTitle: {
         marginLeft: -3,

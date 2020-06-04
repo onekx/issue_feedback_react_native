@@ -114,7 +114,7 @@ export default class Home extends Component {
                     <Image source={ require('../../images/home.jpg') } 
                         style={{ width: 340, height: 125, borderRadius: 10,marginBottom: 20 }} 
                     />
-                    <ProductList />
+                    <ProductList navigation={navigation} />
                 </Content>
                 <Fab
                     style={{ backgroundColor: '#5067FF' }}

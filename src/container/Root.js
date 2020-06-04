@@ -8,6 +8,7 @@ import Home from '../pages/home/Home'
 import Profile from '../pages/user/Profile'
 import SubmitFeedback from '../pages/feedback/SubmitFeedback'
 import FeedbackDetails from '../pages/feedback/FeedbackDetails'
+import Feedbacks from '../pages/feedback/Feedbacks'
 
 const Stack = createStackNavigator()
 
@@ -22,6 +23,7 @@ const App = () => {
                 <Stack.Screen name="submitFeedback" component={SubmitFeedback} />
                 <Stack.Screen name="profile" component={Profile} />
                 <Stack.Screen name="feedbackDetails" component={FeedbackDetails} />
+                <Stack.Screen name="feedbacks" component={Feedbacks} />
             </Stack.Navigator>
         </NavigationContainer>
     )
