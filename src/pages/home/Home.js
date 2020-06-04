@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Content, Header, Fab, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
-import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableHighlight } from 'react-native'
-import Feedback from '../../components/Feedback'
+import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableOpacity } from 'react-native'
+import ProductList from '../../components/ProductList'
 import Request from '../../api/Request'
 import DeviceStorage from '../../utils/DeviceStorage'
 
@@ -57,40 +57,10 @@ export default class Home extends Component {
         navigation.navigate('login')
     }
 
-    _renderFeedback = () => {
-        const { feedbackArr } = this.state
-        const { navigation } = this.props
-        const arr = []
-        feedbackArr.forEach(value => {
-            arr.push(
-                <Feedback 
-                    description={value.description}
-                    time={value.created_at}
-                    issueId={value.issue_id}
-                    userName={value.owner.nickname}
-                    likes={value.likes}
-                    dislikes={value.dislikes}
-                    navigation={navigation}
-                />
-            )
-        })
-        return arr
-    }
-
-    getFeedbacks = () => {
-        const url = '/issue/product/83f9e13b-288d-4e83-81e6-9560fba761fc?status=opening'
-        Request(url)
-          .then(res=>this.setState({
-              count: res.result.count,
-              feedbackArr: res.result.issues
-          }))
-    }
-
     render() {
-        const { count, nickName } = this.state
+        const { nickName } = this.state
         const { navigation } = this.props
         console.disableYellowBox = true
-        if(count === 0) this.getFeedbacks()
         return(
             <Container>
                 <Modal
@@ -104,16 +74,16 @@ export default class Home extends Component {
                         <View style={styles.modal}>
                             <Text style={{alignSelf: 'center'}}>确认退出？</Text>
                             <View style={{flexDirection: 'row',justifyContent: 'space-around'}}>
-                            <TouchableHighlight
+                            <TouchableOpacity
                                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             >
-                                <Text style={{backgroundColor: '#fff'}}>否</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight
+                                <Text>否</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
                                 onPress={() => navigation.navigate('login')}
                             >
-                                <Text style={{backgroundColor: '#fff'}}>是</Text>
-                            </TouchableHighlight>
+                                <Text>是</Text>
+                            </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -142,9 +112,9 @@ export default class Home extends Component {
                 </Header>
                 <Content padder>
                     <Image source={ require('../../images/home.jpg') } 
-                        style={{ width: 340, height: 125, borderRadius: 10 }} 
+                        style={{ width: 340, height: 125, borderRadius: 10,marginBottom: 20 }} 
                     />
-                    {this._renderFeedback()}
+                    <ProductList navigation={navigation} />
                 </Content>
                 <Fab
                     style={{ backgroundColor: '#5067FF' }}
