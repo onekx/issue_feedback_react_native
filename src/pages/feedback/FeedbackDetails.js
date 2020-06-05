@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Content, ListItem, Text, Left, Body, Card, CardItem, Thumbnail, Icon, Button, Right } from 'native-base'
+import {
+    Container, Content, ListItem, Text, Left, Body, Card,
+    CardItem, Thumbnail, Icon, Button, Right, Header, Title
+} from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
 import CommentCard from '../../components/CommentCard'
 import { comment, submit_comment } from '../../api/RequestFactory'
@@ -103,6 +106,17 @@ export default class FeedbackDetails extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
+                <Header>
+                    <Left>
+                        <Button transparent onPress={() => navigation.goBack()}>
+                            <Icon type="AntDesign" name='arrowleft' />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title>Header</Title>
+                    </Body>
+                    <Right />
+                </Header>
                 <Content>
                     <Card transparent>
                         <CardItem>
@@ -113,11 +127,6 @@ export default class FeedbackDetails extends Component {
                                     <Text note>{`${route.params.md}    ${route.params.hm}`}</Text>
                                 </Body>
                             </Left>
-                            <Right>
-                                <Button transparent onPress={() => navigation.goBack()}>
-                                    <Icon type="AntDesign" name="back" style={{ fontSize: 20 }} />
-                                </Button>
-                            </Right>
                         </CardItem>
                         <CardItem style={{ marginTop: -10 }}>
                             <Body>
