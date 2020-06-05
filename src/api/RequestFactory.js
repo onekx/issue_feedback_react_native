@@ -53,3 +53,9 @@ export const update_profile = async (id, data) => {
     const result = await BaseRequest(`/profile/${id}`, data, 'PUT')
     return result
 }
+
+// 用户提交评论
+export const submit_comment = async (data) => {
+    const result = await BaseRequest('/comment', data, 'post')
+    return result
+}

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Container, Content, ListItem, Text, Left, Body, Card, CardItem, Thumbnail, Icon, Button, Right } from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
-import { comment } from '../../api/RequestFactory'
+import CommentCard from '../../components/CommentCard'
+import { comment, submit_comment } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import moment from 'moment'
 
@@ -28,23 +29,12 @@ export default class FeedbackDetails extends Component {
         const commentsArr = []
         commentList.forEach(comment => {
             commentsArr.push(
-                <Card transparent>
-                    <CardItem>
-                        <Left>
-                            <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
-                            <Body>
-                                <Text>{comment.owner.nickname}</Text>
-                                <Text note>{`${this.getLocalTime(comment.created_at).month}   ${this.getLocalTime(comment.created_at).hours}`}</Text>
-                            </Body>
-                        </Left>
-                    </CardItem>
-                    <CardItem>
-                        <Text style={{ color: '#2c2c2c', marginLeft: 45, marginTop: -10 }}>
-                            {comment.content}
-                        </Text>
-                    </CardItem>
-                    <View style={{ height: 1, backgroundColor: '#c4c4c4' }} />
-                </Card>
+                <CommentCard
+                    name={comment.owner.nickname}
+                    month={this.getLocalTime(comment.created_at).month}
+                    hours={this.getLocalTime(comment.created_at).hours}
+                    content={comment.content}
+                />
             )
         })
         return commentsArr
@@ -59,17 +49,15 @@ export default class FeedbackDetails extends Component {
             "user_id": userId,
             "content": commentText
         }
-        Request('/comment', data, 'post')
-            .then(res => {
-                if (res.ok) {
-                    Alert.alert('评论成功！')
-                    this.setState({
-                        commentText: '',
-                        modalVisible: false
-                    })
-                }
-                else console.log(res)
+        const res = await submit_comment(data)
+        if (res.ok) {
+            Alert.alert('评论成功！')
+            this.setState({
+                commentText: '',
+                modalVisible: false
             })
+        }
+        else console.log(res)
     }
 
     getLocalTime = (time) => {
@@ -98,7 +86,7 @@ export default class FeedbackDetails extends Component {
                         onPress={() => this.setState({ modalVisible: false })}
                     >
                         <View style={styles.modalContainer}>
-                            <View style={styles.content}>
+                            <View style={styles.modalContent}>
                                 <TextInput
                                     multiline
                                     autoFocus
