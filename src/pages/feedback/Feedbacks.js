@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Header, Title, Content, Fab, Button, Left, Right, Body, Icon, Text, Spinner } from 'native-base'
-import Request from '../../api/Request'
+import { feedbacks } from '../../api/RequestFactory'
 import FeedbackCard from '../../components/FeedbackCard'
 
 class Feedbacks extends Component {
@@ -14,18 +14,15 @@ class Feedbacks extends Component {
     }
 
     // 获取该产品下的所有反馈
-    getFeedbacks = () => {
+    getFeedbacks = async () => {
         const { productId } = this.props.route.params
-        const url = `/issue/product/${productId}?status=opening`
-        Request(url)
-            .then(res => {
-                if (res.ok) {
-                    this.setState({
-                        feedbackArr: res.result.issues,
-                        hidden: false
-                    })
-                } else console.log(res)
+        const res = await feedbacks(productId)
+        res.ok
+            ? this.setState({
+                feedbackArr: res.result.issues,
+                hidden: false
             })
+            : console.log(res.errors.message)
     }
 
     //判断反馈数是否为零，是 返回文本，否 则返回反馈列表
@@ -35,7 +32,7 @@ class Feedbacks extends Component {
         const content = []
         if (feedbackArr.length === 0) {
             return (
-                <Text style={{paddingTop: 20,paddingLeft: 20,color:'#A9A9A9'}}>
+                <Text style={{ paddingTop: 20, paddingLeft: 20, color: '#A9A9A9' }}>
                     暂时还没有反馈
                 </Text>
             )

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Container, Content, Header, Fab, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
 import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableOpacity } from 'react-native'
 import ProductList from '../../components/ProductList'
-import Request from '../../api/Request'
+import { get_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 export default class Home extends Component {
@@ -22,8 +22,8 @@ export default class Home extends Component {
 
     componentDidMount() {
         this.getProfile()
-        this.refresh = DeviceEventEmitter.addListener('refresh', (value)=>{
-            if(value) this.setState({count: 0})
+        this.refresh = DeviceEventEmitter.addListener('refresh', (value) => {
+            if (value) this.setState({ count: 0 })
         })
     }
 
@@ -33,21 +33,20 @@ export default class Home extends Component {
 
     getProfile = async () => {
         const userId = await DeviceStorage.get("user_id")
-        Request(`/profile/${userId}`)
-            .then(res => this.setState({
-                nickName: res.result.nickname,
-                avatar: res.result.avatar,
-                gender: res.result.gender
-            }))
+        const res = await get_profile(userId)
+        this.setState({
+            nickName: res.result.nickname,
+            avatar: res.result.avatar,
+            gender: res.result.gender
+        })
     }
 
     checkGender = () => {
         const { gender } = this.state
-        if (gender === 1) {
-            return <Icon name="female" style={styles.female}/>
-        } else {
-            return <Icon name="male" style={styles.male}/>
-        }
+        const genderIcon = gender === 1
+            ? <Icon name="female" style={styles.female} />
+            : <Icon name="male" style={styles.male} />
+        return genderIcon
     }
 
     logoutAccount = () => {
@@ -61,7 +60,7 @@ export default class Home extends Component {
         const { nickName } = this.state
         const { navigation } = this.props
         console.disableYellowBox = true
-        return(
+        return (
             <Container>
                 <Modal
                     transparent={true}
@@ -72,23 +71,23 @@ export default class Home extends Component {
                 >
                     <View style={styles.modalContainer}>
                         <View style={styles.modal}>
-                            <Text style={{alignSelf: 'center'}}>确认退出？</Text>
-                            <View style={{flexDirection: 'row',justifyContent: 'space-around'}}>
-                            <TouchableOpacity
-                                onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                            >
-                                <Text>否</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('login')}
-                            >
-                                <Text>是</Text>
-                            </TouchableOpacity>
+                            <Text style={{ alignSelf: 'center' }}>确认退出？</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                                <TouchableOpacity
+                                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                                >
+                                    <Text>否</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('login')}
+                                >
+                                    <Text>是</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
                 </Modal>
-                <Header style={{backgroundColor: '#FFF'}}>
+                <Header style={{ backgroundColor: '#FFF' }}>
                     <Left>
                         <Button transparent
                             onPress={() => navigation.navigate("profile")}
@@ -97,7 +96,7 @@ export default class Home extends Component {
                         </Button>
                     </Left>
                     <Body>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                             <Text>{nickName}</Text>
                             {this.checkGender()}
                         </View>
@@ -106,29 +105,33 @@ export default class Home extends Component {
                         <Button transparent
                             onPress={() => this.setModalVisible(true)}
                         >
-                            <Icon type="AntDesign" name='logout' style={{color: 'gray'}} />
+                            <Icon type="AntDesign" name='logout' style={{ color: 'gray' }} />
                         </Button>
                     </Right>
                 </Header>
                 <Content padder>
-                    <Image source={ require('../../images/home.jpg') } 
-                        style={{ width: 340, height: 125, borderRadius: 10,marginBottom: 20 }} 
-                    />
+                    <Image source={require('../../images/home.jpg')} style={styles.image} />
                     <ProductList navigation={navigation} />
                 </Content>
                 <Fab
                     style={{ backgroundColor: '#5067FF' }}
                     position="bottomRight"
-                    onPress={()=>navigation.navigate('submitFeedback')}
+                    onPress={() => navigation.navigate('submitFeedback')}
                 >
                     <Icon type="FontAwesome" name="pencil" />
                 </Fab>
-            </Container>
+            </Container >
         )
-  }  
+    }
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
+    image: {
+        width: 340,
+        height: 125,
+        borderRadius: 10,
+        marginBottom: 20
+    },
     male: {
         color: '#0085FF',
         fontSize: 18,

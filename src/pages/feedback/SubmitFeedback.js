@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { 
-Container, Content, ListItem, Label, Left, Input, Right,
-Item, Form, Picker, Header, Icon, Button, Body, Title 
+import {
+    Container, Content, ListItem, Label, Left, Input, Right,
+    Item, Form, Picker, Header, Icon, Button, Body, Title
 } from 'native-base'
 import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
-import Request from '../../api/Request'
+import { submit, products } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 export default class SubmitFeedback extends Component {
@@ -22,16 +22,14 @@ export default class SubmitFeedback extends Component {
         })
     }
 
-    getProducts = () => {
-        Request('/products')
-            .then(res => {
-                const nameArr = res.result.products.map(value => (value.name))
-                const idArr = res.result.products.map(value => (value.product_id))
-                this.setState({
-                    productsName: nameArr,
-                    productsId: idArr
-                })
-            })
+    getProducts = async () => {
+        const res = await products()
+        const nameArr = res.result.products.map(value => (value.name))
+        const idArr = res.result.products.map(value => (value.product_id))
+        this.setState({
+            productsName: nameArr,
+            productsId: idArr
+        })
     }
 
     _renderItems = () => {
@@ -43,7 +41,7 @@ export default class SubmitFeedback extends Component {
         return names
     }
 
-    submit = async () => {
+    _submit = async () => {
         const { productsId, title, description, selected } = this.state
         const { navigation } = this.props
         const id = await DeviceStorage.get('user_id')
@@ -53,14 +51,11 @@ export default class SubmitFeedback extends Component {
             "title": title,
             "description": description
         }
-        Request('/issue', data, 'post')
-            .then(res => {
-                if (res.ok) {
-                    navigation.goBack()
-                    DeviceEventEmitter.emit('refresh', true)
-                }
-                else Alert.alert('提交失败!')
-            })
+        const res = await submit(data)
+        if (res.ok) {
+            navigation.goBack()
+            DeviceEventEmitter.emit('refresh', true)
+        } else Alert.alert('提交失败!')
     }
 
     render() {
@@ -122,7 +117,7 @@ export default class SubmitFeedback extends Component {
                     </Form>
                     <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.createButton}
-                            onPress={this.submit}
+                            onPress={this._submit}
                         >
                             <Text style={styles.text}>
                                 提交反馈

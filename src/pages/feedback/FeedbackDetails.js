@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Content, ListItem, Text, Left, Body, Card, CardItem, Thumbnail, Icon, Button, Right } from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
-import Request from '../../api/Request'
+import { comment } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import moment from 'moment'
 
@@ -12,15 +12,11 @@ export default class FeedbackDetails extends Component {
         commentText: ''
     }
 
-    getCommentList = () => {
+    getCommentList = async () => {
         const { id } = this.props.route.params
-        Request(`/comments/${id}`)
-            .then(res=>{
-                if(res.ok) {
-                    this.setState({
-                    commentList: res.result.comments
-                })} else console.log(res)
-            })
+        const res = await comment(id)
+        res.ok ? this.setState({ commentList: res.result.comments })
+            : console.log(res.errors.message)
     }
 
     componentDidMount() {
@@ -30,7 +26,7 @@ export default class FeedbackDetails extends Component {
     _renderComment = () => {
         const { commentList } = this.state
         const commentsArr = []
-        commentList.forEach(comment=>{
+        commentList.forEach(comment => {
             commentsArr.push(
                 <Card transparent>
                     <CardItem>
@@ -43,11 +39,11 @@ export default class FeedbackDetails extends Component {
                         </Left>
                     </CardItem>
                     <CardItem>
-                        <Text style={{color: '#2c2c2c',marginLeft: 45, marginTop: -10}}>
-                             {comment.content}
+                        <Text style={{ color: '#2c2c2c', marginLeft: 45, marginTop: -10 }}>
+                            {comment.content}
                         </Text>
                     </CardItem>
-                    <View style={{height: 1, backgroundColor:'#c4c4c4'}}/>
+                    <View style={{ height: 1, backgroundColor: '#c4c4c4' }} />
                 </Card>
             )
         })
@@ -60,12 +56,12 @@ export default class FeedbackDetails extends Component {
         const userId = await DeviceStorage.get('user_id')
         const data = {
             "issue_id": id,
-	        "user_id": userId,
-	        "content": commentText
+            "user_id": userId,
+            "content": commentText
         }
         Request('/comment', data, 'post')
-            .then(res=>{
-                if(res.ok) {
+            .then(res => {
+                if (res.ok) {
                     Alert.alert('评论成功！')
                     this.setState({
                         commentText: '',
@@ -89,7 +85,7 @@ export default class FeedbackDetails extends Component {
     render() {
         const { route, navigation } = this.props
         const { modalVisible } = this.state
-        return(
+        return (
             <Container>
                 <Modal
                     transparent={true}
@@ -99,24 +95,24 @@ export default class FeedbackDetails extends Component {
                     }}
                 >
                     <TouchableWithoutFeedback
-                        onPress={()=>this.setState({modalVisible: false})}
+                        onPress={() => this.setState({ modalVisible: false })}
                     >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.content}>
-                            <TextInput
-                                multiline
-                                autoFocus
-                                onChangeText={value => this.setState({
-                                    commentText: value
-                                })}
-                            />
-                            <TouchableHighlight style={styles.sendBtn}
-                                onPress={()=>this.sendComment()}
-                            >
-                                <Text style={styles.sendText}>发送</Text>
-                            </TouchableHighlight>
+                        <View style={styles.modalContainer}>
+                            <View style={styles.content}>
+                                <TextInput
+                                    multiline
+                                    autoFocus
+                                    onChangeText={value => this.setState({
+                                        commentText: value
+                                    })}
+                                />
+                                <TouchableHighlight style={styles.sendBtn}
+                                    onPress={() => this.sendComment()}
+                                >
+                                    <Text style={styles.sendText}>发送</Text>
+                                </TouchableHighlight>
+                            </View>
                         </View>
-                    </View>
                     </TouchableWithoutFeedback>
                 </Modal>
                 <Content>
@@ -130,23 +126,23 @@ export default class FeedbackDetails extends Component {
                                 </Body>
                             </Left>
                             <Right>
-                                <Button transparent onPress={()=>navigation.goBack()}>
-                                    <Icon type="AntDesign" name="back" style={{fontSize: 20}} />
+                                <Button transparent onPress={() => navigation.goBack()}>
+                                    <Icon type="AntDesign" name="back" style={{ fontSize: 20 }} />
                                 </Button>
                             </Right>
                         </CardItem>
-                        <CardItem style={{marginTop: -10}}>
+                        <CardItem style={{ marginTop: -10 }}>
                             <Body>
-                                <Text style={{color: '#2c2c2c'}}>
-                                     {route.params.content}
+                                <Text style={{ color: '#2c2c2c' }}>
+                                    {route.params.content}
                                 </Text>
                             </Body>
                         </CardItem>
-                        <CardItem style={{marginTop: -10}}>
+                        <CardItem style={{ marginTop: -10 }}>
                             <Left>
-                                <Button transparent onPress={()=>this.setState({modalVisible: true})}>
-                                    <Icon type="FontAwesome" name="comment" style={{color: 'gray'}} />
-                                    <Text style={{color: 'gray'}}>写评论</Text>
+                                <Button transparent onPress={() => this.setState({ modalVisible: true })}>
+                                    <Icon type="FontAwesome" name="comment" style={{ color: 'gray' }} />
+                                    <Text style={{ color: 'gray' }}>写评论</Text>
                                 </Button>
                             </Left>
                         </CardItem>

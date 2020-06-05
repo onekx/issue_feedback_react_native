@@ -14,19 +14,23 @@ export default class TimerButton extends Component {
     // 获取验证码
     getCaptcha = () => {
         const { email, acceptable } = this.props
-        const data = {
-            "account_id": email
-        }
+        const serverUrl = 'http://192.168.154.131:8923/service/v1/account/send_code'
+        const data = {"account_id": email}
         if (acceptable) {
-            Request('/account/send_code', data, 'post')
-            .then(res => {
-                if (res.ok) {
-                    console.log(res.result.validate_code)
-                    DeviceStorage.save("validate_token", res.result.validate_token)
-                } else {
-                    Alert.alert('请检查输入是否正确！')
+            fetch(serverUrl, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
+                .then(res => (res.json()))
+                .then(res => {
+                    if (res.ok) {
+                        console.log(res.result.validate_code)
+                        DeviceStorage.save("validate_token", res.result.validate_token)
+                    } else Alert.alert('请检查输入是否正确！')
+                })
         }
     }
 
@@ -52,7 +56,7 @@ export default class TimerButton extends Component {
         }, 1000)
     }
 
-    shouldStartCountting = (shouldStart) => {        
+    shouldStartCountting = (shouldStart) => {
         if (shouldStart) {
             this.countDownAction()
             this.setState({
@@ -71,22 +75,22 @@ export default class TimerButton extends Component {
     }
 
     render() {
-        const {textColor, buttonOpacity, acceptable} = this.props
-        const {counting, timerTitle, selfEnable} = this.state
+        const { textColor, buttonOpacity, acceptable } = this.props
+        const { counting, timerTitle, selfEnable } = this.state
         return (
-            <TouchableOpacity 
-                activeOpacity={ counting ? 1 : buttonOpacity } 
+            <TouchableOpacity
+                activeOpacity={counting ? 1 : buttonOpacity}
                 onPress={() => {
                     if (!counting && selfEnable && acceptable) {
-                        this.setState({selfEnable: false})
+                        this.setState({ selfEnable: false })
                         this.shouldStartCountting(true)
                     }
                     this.getCaptcha()
                 }}
             >
-                <View style={{marginTop: 10,paddingRight: 5}}>
+                <View style={{ marginTop: 10, paddingRight: 5 }}>
                     <Text
-                        style={{color: ((!counting && selfEnable) ? textColor : '#c4c4c4')}}>
+                        style={{ color: ((!counting && selfEnable) ? textColor : '#c4c4c4') }}>
                         {timerTitle}
                     </Text>
                 </View>

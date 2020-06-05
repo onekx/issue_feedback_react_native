@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
-import Request from '../../api/Request'
+import { login } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class Login extends Component {
@@ -15,7 +15,7 @@ class Login extends Component {
             password: ''
         })
     }
-    
+
     judgeRole = (role) => {
         const { navigation } = this.props
         switch (role) {
@@ -33,29 +33,28 @@ class Login extends Component {
         }
     }
 
-    loginAccount = () => {
+    storageToken = (token, userId) => {
+        DeviceStorage.save("token", token)
+        DeviceStorage.save("user_id", userId)
+    }
+
+    loginAccount = async () => {
         const { email, password } = this.state
         const data = {
             "account_id": email,
             "password": password
         }
-        Request('/login', data, 'post')
-            .then(res => {
-                if(res.ok) {
-                    DeviceStorage.save("token", res.result.token)
-                    DeviceStorage.save("user_id", res.result.user_id)
-                    this.judgeRole(res.result.role_id)
-                } else {
-                    const error = res.error_type == undefined ? '邮箱格式错误！' : res.message
-                    Alert.alert(error)
-                }
-            })
+        const res = await login(data)
+        if (res.ok) {
+            this.storageToken(res.result.token, res.result.user_id)
+            this.judgeRole(res.result.role_id)
+        } else Alert.alert(res.message)
     }
 
     checkInput = () => {
         const { email, password } = this.state
         if (email == '' || password == '') {
-            Alert.alert('提示：','密码或邮箱不能为空！')
+            Alert.alert('提示：', '密码或邮箱不能为空！')
         } else {
             this.loginAccount()
         }
@@ -64,7 +63,7 @@ class Login extends Component {
     render() {
         const { navigation } = this.props
         const { email, password } = this.state
-        return(
+        return (
             <View style={styles.container}>
                 <View style={styles.editContainer}>
                     <View style={styles.userName}>
@@ -72,7 +71,7 @@ class Login extends Component {
                             style={styles.edit}
                             placeholder="输入邮箱"
                             placeholderTextColor="#c4c4c4"
-                            onChangeText = {value => {
+                            onChangeText={value => {
                                 this.setState({
                                     email: value
                                 })
@@ -80,28 +79,28 @@ class Login extends Component {
                             value={email}
                         />
                     </View>
-                    <View style={styles.divide}/>
+                    <View style={styles.divide} />
                     <View style={styles.passWord}>
                         <TextInput
                             style={styles.edit}
                             placeholder="输入密码"
                             placeholderTextColor="#c4c4c4"
                             secureTextEntry={true}
-                            onChangeText = {value => {
+                            onChangeText={value => {
                                 this.setState({
                                     password: value
                                 })
                             }}
                             value={password}
                         />
-                    </View>                    
+                    </View>
                     <TouchableOpacity
                         style={styles.login}
-                        onPress={()=>{
+                        onPress={() => {
                             this.checkInput()
                         }}
-                    >                            
-                        <Text style={styles.text}>登录</Text> 
+                    >
+                        <Text style={styles.text}>登录</Text>
                     </TouchableOpacity>
                     <View style={styles.registWord}>
                         <View>
@@ -109,11 +108,11 @@ class Login extends Component {
                         </View>
                         <View>
                             <TouchableOpacity
-                                onPress={()=>{
+                                onPress={() => {
                                     navigation.navigate('registration')
                                 }}
                             >
-                                <Text style={{color: '#0085FF'}}>立即注册</Text>
+                                <Text style={{ color: '#0085FF' }}>立即注册</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
         height: 35,
         backgroundColor: '#0085FF',
         borderRadius: 3,
-        
+
     },
     text: {
         fontSize: 15,
@@ -177,7 +176,7 @@ const styles = StyleSheet.create({
     },
     divide: {
         height: 1,
-        backgroundColor:'#c4c4c4'
+        backgroundColor: '#c4c4c4'
     }
 })
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Spinner } from 'native-base'
-import Request from '../api/Request'
+import { products } from '../api/RequestFactory'
 
 const colors = [
     '#FFB6C1',
@@ -23,15 +23,14 @@ class ProductList extends Component {
     }
 
     // 请求获取所有产品
-    getProducts = () => {
-        Request('/products')
-            .then(res => {
-                if (res.ok) this.setState({
-                    products: res.result.products,
-                    hidden: false
-                })
-                else console.log(res)
+    getProducts = async () => {
+        const res = await products()
+        res.ok
+            ? this.setState({
+                products: res.result.products,
+                hidden: false
             })
+            : console.log(res)
     }
 
     // 返回保存所有产品的数组
