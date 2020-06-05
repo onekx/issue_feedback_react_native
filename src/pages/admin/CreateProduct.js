@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Content, Form, Item, Input, Label } from 'native-base'
 import { TouchableOpacity, Text, StyleSheet, View, Alert } from 'react-native'
-import Request from '../../api/Request'
+import { create } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import AdminHeader from '../../components/AdminHeader'
 
@@ -26,28 +26,33 @@ class CreateProduct extends Component {
             "name": productName,
             "description": productDes
         }
-        Request('/product', data, 'post')
-        .then(res => {
-            if(res.ok) {
-                Alert.alert('创建成功!')
-                this.clearInput()
-            } else {
-                Alert.alert('创建失败!')
-            }
-        })
+        const res = await create(data)
+        if (res.ok) {
+            Alert.alert('创建成功!')
+            this.clearInput()
+        } else Alert.alert(res.message)
+        // Request('/product', data, 'post')
+        // .then(res => {
+        //     if(res.ok) {
+        //         Alert.alert('创建成功!')
+        //         this.clearInput()
+        //     } else {
+        //         Alert.alert('创建失败!')
+        //     }
+        // })
     }
 
     render() {
         const { navigation } = this.props
         const { productDes, productName } = this.state
-        return(
+        return (
             <Container>
                 <AdminHeader title="创建产品" navigation={navigation} />
                 <Content>
                     <Form>
                         <Item stackedLabel>
                             <Label>产品名称</Label>
-                            <Input onChangeText = {value => {
+                            <Input onChangeText={value => {
                                 this.setState({
                                     productName: value
                                 })
@@ -57,12 +62,12 @@ class CreateProduct extends Component {
                         </Item>
                         <Item stackedLabel last>
                             <Label>产品描述</Label>
-                            <Input onChangeText = {value => {
+                            <Input onChangeText={value => {
                                 this.setState({
                                     productDes: value
                                 })
                             }}
-                            value={productDes}
+                                value={productDes}
                             />
                         </Item>
                     </Form>

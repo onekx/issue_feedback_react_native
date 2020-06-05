@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { Alert, Picker } from 'react-native'
-import Request from '../../api/Request'
+import { get_profile, update_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import { Container, Header, Content, List, ListItem, Text, Input, Button,Left, Body, Icon, Title, Form } from 'native-base'
+import {
+    Container, Header, Content, List, ListItem, Text,
+    Input, Button, Left, Body, Icon, Title, Form
+} from 'native-base'
 
 export default class Profile extends Component {
     state = {
@@ -14,35 +17,32 @@ export default class Profile extends Component {
 
     getProfile = async () => {
         const userId = await DeviceStorage.get("user_id")
-        Request(`/profile/${userId}`)
-            .then(res => {
-                this.setState({
-                nickName: res.result.nickname,
-                gender: res.result.gender
-            })
-            if(this.state.gender === 0) {
-                this.setState({
-                    selected: 'male'
-                })
-            }
+        const res = await get_profile(userId)
+        this.setState({
+            nickName: res.result.nickname,
+            gender: res.result.gender
         })
+        if (this.state.gender === 0)
+            this.setState({ selected: 'male' })
     }
 
     setNickName = async () => {
         const { inputNickname } = this.state
         const userId = await DeviceStorage.get("user_id")
-        const data = {"nickname": inputNickname}
-        Request(`/profile/${userId}`, data, 'put')
-            .then(res=>{if(res.ok) Alert.alert('修改成功！')})
+        const data = { "nickname": inputNickname }
+        const res = await update_profile(userId, data)
+        res.ok ? Alert.alert('修改成功！')
+            : Alert.alert('修改失败！')
     }
 
     setGender = async (value) => {
-        this.setState({selected: value})
+        this.setState({ selected: value })
         const userId = await DeviceStorage.get("user_id")
         const data = { "gender": 1 }
-        if (this.state.selected === 'male') data.gender=0
-        Request(`/profile/${userId}`, data, 'put')
-            .then(res=>{if(res.ok) Alert.alert('修改成功！')})
+        if (this.state.selected === 'male') data.gender = 0
+        const res = await update_profile(userId, data)
+        res.ok ? Alert.alert('修改成功！')
+            : Alert.alert('修改失败！')
     }
 
     componentDidMount() {
@@ -57,7 +57,7 @@ export default class Profile extends Component {
                 <Header>
                     <Left>
                         <Button transparent
-                            onPress={()=>navigate('home')}
+                            onPress={() => navigate('home')}
                         >
                             <Icon type="AntDesign" name='arrowleft' />
                         </Button>
@@ -70,16 +70,16 @@ export default class Profile extends Component {
                     <List>
                         <ListItem>
                             <Text>昵称：</Text>
-                            <Input 
+                            <Input
                                 placeholder={nickName}
-                                onChangeText = {value => 
+                                onChangeText={value =>
                                     this.setState({
                                         inputNickname: value
                                     })}
-                                style={{borderBottomWidth: 1,borderBottomColor: '#000'}} />
-                            <Button 
-                                style={{height: 30}}
-                                onPress={()=>this.setNickName()}    
+                                style={{ borderBottomWidth: 1, borderBottomColor: '#000' }} />
+                            <Button
+                                style={{ height: 30 }}
+                                onPress={() => this.setNickName()}
                             >
                                 <Text>确认</Text>
                             </Button>
