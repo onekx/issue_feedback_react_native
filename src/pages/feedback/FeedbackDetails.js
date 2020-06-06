@@ -113,7 +113,7 @@ export default class FeedbackDetails extends Component {
                         </Button>
                     </Left>
                     <Body>
-                        <Title>Header</Title>
+                        <Title>反馈详情</Title>
                     </Body>
                     <Right />
                 </Header>
@@ -137,11 +137,21 @@ export default class FeedbackDetails extends Component {
                         </CardItem>
                         <CardItem style={{ marginTop: -10 }}>
                             <Left>
-                                <Button transparent onPress={() => this.setState({ modalVisible: true })}>
-                                    <Icon type="FontAwesome" name="comment" style={{ color: 'gray' }} />
-                                    <Text style={{ color: 'gray' }}>写评论</Text>
+                                <Button iconLeft transparent>
+                                    <Icon type="AntDesign" name="like1" style={{ fontSize: 20, color: '#c4c4c4' }} />
+                                    <Text style={{ marginLeft: -10, color: '#c4c4c4' }}>5</Text>
+                                </Button>
+                                <Button iconLeft transparent>
+                                    <Icon type="AntDesign" name="dislike1" style={{ fontSize: 20, color: '#c4c4c4' }} />
+                                    <Text style={{ marginLeft: -10, color: '#c4c4c4' }}>2</Text>
                                 </Button>
                             </Left>
+                            <Right>
+                                <Button transparent onPress={() => this.setState({ modalVisible: true })}>
+                                    <Icon type="FontAwesome" name="comment" style={{ color: '#0066CC' }} />
+                                    <Text style={{ color: '#0066CC' }}>写评论</Text>
+                                </Button>
+                            </Right>
                         </CardItem>
                         <ListItem itemDivider />
                     </Card>
