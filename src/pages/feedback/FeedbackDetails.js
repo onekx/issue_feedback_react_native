@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Content, ListItem, Text, Left, Body, Card, CardItem, Thumbnail, Icon, Button, Right } from 'native-base'
+import {
+    Container, Content, ListItem, Text, Left, Body, Card,
+    CardItem, Thumbnail, Icon, Button, Right, Header, Title
+} from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
 import CommentCard from '../../components/CommentCard'
 import { comment, submit_comment } from '../../api/RequestFactory'
@@ -103,6 +106,17 @@ export default class FeedbackDetails extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
+                <Header>
+                    <Left>
+                        <Button transparent onPress={() => navigation.goBack()}>
+                            <Icon type="AntDesign" name='arrowleft' />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title>反馈详情</Title>
+                    </Body>
+                    <Right />
+                </Header>
                 <Content>
                     <Card transparent>
                         <CardItem>
@@ -113,11 +127,6 @@ export default class FeedbackDetails extends Component {
                                     <Text note>{`${route.params.md}    ${route.params.hm}`}</Text>
                                 </Body>
                             </Left>
-                            <Right>
-                                <Button transparent onPress={() => navigation.goBack()}>
-                                    <Icon type="AntDesign" name="back" style={{ fontSize: 20 }} />
-                                </Button>
-                            </Right>
                         </CardItem>
                         <CardItem style={{ marginTop: -10 }}>
                             <Body>
@@ -128,11 +137,21 @@ export default class FeedbackDetails extends Component {
                         </CardItem>
                         <CardItem style={{ marginTop: -10 }}>
                             <Left>
-                                <Button transparent onPress={() => this.setState({ modalVisible: true })}>
-                                    <Icon type="FontAwesome" name="comment" style={{ color: 'gray' }} />
-                                    <Text style={{ color: 'gray' }}>写评论</Text>
+                                <Button iconLeft transparent>
+                                    <Icon type="AntDesign" name="like1" style={{ fontSize: 20, color: '#c4c4c4' }} />
+                                    <Text style={{ marginLeft: -10, color: '#c4c4c4' }}>5</Text>
+                                </Button>
+                                <Button iconLeft transparent>
+                                    <Icon type="AntDesign" name="dislike1" style={{ fontSize: 20, color: '#c4c4c4' }} />
+                                    <Text style={{ marginLeft: -10, color: '#c4c4c4' }}>2</Text>
                                 </Button>
                             </Left>
+                            <Right>
+                                <Button transparent onPress={() => this.setState({ modalVisible: true })}>
+                                    <Icon type="FontAwesome" name="comment" style={{ color: '#0066CC' }} />
+                                    <Text style={{ color: '#0066CC' }}>写评论</Text>
+                                </Button>
+                            </Right>
                         </CardItem>
                         <ListItem itemDivider />
                     </Card>

@@ -40,6 +40,7 @@ class Feedbacks extends Component {
             feedbackArr.forEach(value => {
                 content.push(
                     <FeedbackCard
+                        title={value.title}
                         description={value.description}
                         time={value.created_at}
                         issueId={value.issue_id}
