@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Header, Title, Content, Fab, Button, Left, Right, Body, Icon, Text, Spinner } from 'native-base'
+import { Container, Content, Text, Spinner } from 'native-base'
 import { feedbacks } from '../../api/RequestFactory'
 import FeedbackCard from '../../components/FeedbackCard'
+import HeaderModel from '../../components/HeaderModel'
+import WriteButton from '../../components/WriteButton'
 
 class Feedbacks extends Component {
     state = {
@@ -70,32 +72,14 @@ class Feedbacks extends Component {
 
     render() {
         const { productName } = this.props.route.params
-        const { navigate } = this.props.navigation
+        const { navigation } = this.props
         return (
             <Container>
-                <Header>
-                    <Left>
-                        <Button
-                            transparent
-                            onPress={() => navigate('home')}>
-                            <Icon type="AntDesign" name='arrowleft' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>{productName}</Title>
-                    </Body>
-                    <Right />
-                </Header>
+                <HeaderModel navigation={navigation} title={productName} />
                 <Content>
                     {this._renderFeedbacks()}
                 </Content>
-                <Fab
-                    style={{ backgroundColor: '#5067FF' }}
-                    position="bottomRight"
-                    onPress={() => navigate('submitFeedback')}
-                >
-                    <Icon type="FontAwesome" name="pencil" />
-                </Fab>
+                <WriteButton navigation={navigation} />
             </Container>
         )
     }

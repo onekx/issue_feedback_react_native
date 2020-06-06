@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import {
-    Container, Content, ListItem, Label, Left, Input, Right,
-    Item, Form, Picker, Header, Icon, Button, Body, Title
-} from 'native-base'
+import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Picker } from 'native-base'
 import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
 import { submit, products } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
+import HeaderModel from '../../components/HeaderModel'
 
 export default class SubmitFeedback extends Component {
     state = {
@@ -16,11 +14,7 @@ export default class SubmitFeedback extends Component {
         description: ''
     }
 
-    onValueChange = (value) => {
-        this.setState({
-            selected: value
-        })
-    }
+    onValueChange = (value) => this.setState({selected: value})
 
     getProducts = async () => {
         const res = await products()
@@ -65,19 +59,7 @@ export default class SubmitFeedback extends Component {
         return (
             <Container>
                 <Content>
-                    <Header>
-                        <Left>
-                            <Button
-                                transparent
-                                onPress={() => navigation.goBack()}>
-                                <Icon type="AntDesign" name='arrowleft' />
-                            </Button>
-                        </Left>
-                        <Body>
-                            <Title>提交反馈</Title>
-                        </Body>
-                        <Right />
-                    </Header>
+                    <HeaderModel navigation={navigation} title={'提交反馈'} />
                     <ListItem>
                         <Left>
                             <Text style={styles.leftTitle}>选择产品:</Text>

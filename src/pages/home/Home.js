@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Container, Content, Header, Fab, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
+import { Container, Content, Header, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
 import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableOpacity } from 'react-native'
 import ProductList from '../../components/ProductList'
 import { get_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
+import WriteButton from '../../components/WriteButton'
 
 export default class Home extends Component {
     state = {
@@ -16,9 +17,7 @@ export default class Home extends Component {
         modalVisible: false
     }
 
-    setModalVisible = (visible) => {
-        this.setState({ modalVisible: visible })
-    }
+    setModalVisible = (visible) => this.setState({ modalVisible: visible })
 
     componentDidMount() {
         this.getProfile()
@@ -113,13 +112,7 @@ export default class Home extends Component {
                     <Image source={require('../../images/home.jpg')} style={styles.image} />
                     <ProductList navigation={navigation} />
                 </Content>
-                <Fab
-                    style={{ backgroundColor: '#5067FF' }}
-                    position="bottomRight"
-                    onPress={() => navigation.navigate('submitFeedback')}
-                >
-                    <Icon type="FontAwesome" name="pencil" />
-                </Fab>
+                <WriteButton navigation={navigation} />
             </Container >
         )
     }
