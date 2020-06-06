@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import { Alert, Picker } from 'react-native'
 import { get_profile, update_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import {
-    Container, Header, Content, List, ListItem, Text,
-    Input, Button, Left, Body, Icon, Title, Form
-} from 'native-base'
+import { Container, Content, List, ListItem, Text, Input, Button, Form } from 'native-base'
+import HeaderModel from '../../components/HeaderModel'
 
 export default class Profile extends Component {
     state = {
@@ -50,22 +48,11 @@ export default class Profile extends Component {
     }
 
     render() {
-        const { navigate } = this.props.navigation
+        const { navigation } = this.props
         const { selected, nickName } = this.state
         return (
             <Container>
-                <Header>
-                    <Left>
-                        <Button transparent
-                            onPress={() => navigate('home')}
-                        >
-                            <Icon type="AntDesign" name='arrowleft' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>编辑资料</Title>
-                    </Body>
-                </Header>
+                <HeaderModel navigation={navigation} title={'编辑资料'} />
                 <Content>
                     <List>
                         <ListItem>

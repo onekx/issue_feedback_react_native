@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import {
     Container, Content, ListItem, Text, Left, Body, Card,
-    CardItem, Thumbnail, Icon, Button, Right, Header, Title
+    CardItem, Thumbnail, Icon, Button, Right
 } from 'native-base'
 import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
 import CommentCard from '../../components/CommentCard'
 import { comment, submit_comment } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import moment from 'moment'
+import HeaderModel from '../../components/HeaderModel'
 
 export default class FeedbackDetails extends Component {
     state = {
@@ -81,9 +82,7 @@ export default class FeedbackDetails extends Component {
                 <Modal
                     transparent={true}
                     visible={modalVisible}
-                    onRequestClose={() => {
-                        alert("弹窗将关闭")
-                    }}
+                    onRequestClose={() => alert("弹窗将关闭")}
                 >
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ modalVisible: false })}
@@ -93,9 +92,7 @@ export default class FeedbackDetails extends Component {
                                 <TextInput
                                     multiline
                                     autoFocus
-                                    onChangeText={value => this.setState({
-                                        commentText: value
-                                    })}
+                                    onChangeText={value => this.setState({ commentText: value })}
                                 />
                                 <TouchableHighlight style={styles.sendBtn}
                                     onPress={() => this.sendComment()}
@@ -106,17 +103,7 @@ export default class FeedbackDetails extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
-                <Header>
-                    <Left>
-                        <Button transparent onPress={() => navigation.goBack()}>
-                            <Icon type="AntDesign" name='arrowleft' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>反馈详情</Title>
-                    </Body>
-                    <Right />
-                </Header>
+                <HeaderModel navigation={navigation} title={'反馈详情'} />
                 <Content>
                     <Card transparent>
                         <CardItem>

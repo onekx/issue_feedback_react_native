@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import { login } from '../../api/RequestFactory'
+import AccountButton from '../../components/AccountButton'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class Login extends Component {
@@ -53,11 +54,8 @@ class Login extends Component {
 
     checkInput = () => {
         const { email, password } = this.state
-        if (email == '' || password == '') {
-            Alert.alert('提示：', '密码或邮箱不能为空！')
-        } else {
-            this.loginAccount()
-        }
+        if (email == '' || password == '') Alert.alert('提示：', '密码或邮箱不能为空！')
+        else this.loginAccount()
     }
 
     render() {
@@ -71,11 +69,7 @@ class Login extends Component {
                             style={styles.edit}
                             placeholder="输入邮箱"
                             placeholderTextColor="#c4c4c4"
-                            onChangeText={value => {
-                                this.setState({
-                                    email: value
-                                })
-                            }}
+                            onChangeText={value => this.setState({ email: value })}
                             value={email}
                         />
                     </View>
@@ -86,36 +80,21 @@ class Login extends Component {
                             placeholder="输入密码"
                             placeholderTextColor="#c4c4c4"
                             secureTextEntry={true}
-                            onChangeText={value => {
-                                this.setState({
-                                    password: value
-                                })
-                            }}
+                            onChangeText={value => this.setState({ password: value })}
                             value={password}
                         />
                     </View>
                     <TouchableOpacity
                         style={styles.login}
-                        onPress={() => {
-                            this.checkInput()
-                        }}
+                        onPress={() => this.checkInput()}
                     >
                         <Text style={styles.text}>登录</Text>
                     </TouchableOpacity>
-                    <View style={styles.registWord}>
-                        <View>
-                            <Text>没有账号？</Text>
-                        </View>
-                        <View>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.navigate('registration')
-                                }}
-                            >
-                                <Text style={{ color: '#0085FF' }}>立即注册</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    <AccountButton
+                        navigation={navigation}
+                        route={'registration'}
+                        text={'注册'}
+                    />
                 </View>
             </View>
         )
@@ -169,10 +148,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         letterSpacing: 3,
         fontWeight: 'normal'
-    },
-    registWord: {
-        flexDirection: 'row',
-        marginTop: 10
     },
     divide: {
         height: 1,

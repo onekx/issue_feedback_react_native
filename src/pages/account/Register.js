@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import { register } from '../../api/RequestFactory'
 import TimerButton from '../../components/TimerButton'
+import AccountButton from '../../components/AccountButton'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class Register extends Component {
@@ -19,19 +20,16 @@ class Register extends Component {
         const reg = /^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/
         const { email } = this.state
         let isRight = reg.test(email)
-        if (isRight) {
-            this.setState({
-                textColor: '#0085FF',
-                opacity: 0.2,
-                acceptable: true
-            })
-        } else {
-            this.setState({
-                textColor: '#c4c4c4',
-                opacity: 1,
-                acceptable: false
-            })
-        }
+        if (isRight) this.setState({
+            textColor: '#0085FF',
+            opacity: 0.2,
+            acceptable: true
+        })
+        else this.setState({
+            textColor: '#c4c4c4',
+            opacity: 1,
+            acceptable: false
+        })
     }
 
     registerAccount = async () => {
@@ -51,11 +49,8 @@ class Register extends Component {
 
     checkInput = () => {
         const { password, validateCode } = this.state
-        if (validateCode == '' || password == '') {
-            Alert.alert('提示：', '验证码或密码不能为空！')
-        } else {
-            this.registerAccount()
-        }
+        if (validateCode == '' || password == '') Alert.alert('提示：', '验证码或密码不能为空！')
+        else this.registerAccount()
     }
 
     render() {
@@ -70,9 +65,7 @@ class Register extends Component {
                             placeholder="邮箱"
                             placeholderTextColor="#c4c4c4"
                             onChangeText={value => {
-                                this.setState({
-                                    email: value
-                                })
+                                this.setState({ email: value })
                                 this.checkEmail()
                             }}
                         />
@@ -84,7 +77,6 @@ class Register extends Component {
                             password={password}
                             acceptable={acceptable}
                         />
-
                     </View>
                     <View style={styles.divide1} />
                     <View style={styles.passWord}>
@@ -92,11 +84,7 @@ class Register extends Component {
                             style={styles.edit}
                             placeholder="验证码"
                             placeholderTextColor="#c4c4c4"
-                            onChangeText={value => {
-                                this.setState({
-                                    validateCode: value
-                                })
-                            }}
+                            onChangeText={value => this.setState({ validateCode: value })}
                         />
                     </View>
                     <View style={styles.divide2} />
@@ -106,35 +94,20 @@ class Register extends Component {
                             placeholder="密码"
                             placeholderTextColor="#c4c4c4"
                             secureTextEntry={true}
-                            onChangeText={value => {
-                                this.setState({
-                                    password: value
-                                })
-                            }}
+                            onChangeText={value => this.setState({ password: value })}
                         />
                     </View>
                     <TouchableOpacity
                         style={styles.login}
-                        onPress={() => {
-                            this.checkInput()
-                        }}
+                        onPress={() => this.checkInput()}
                     >
                         <Text style={styles.text}>注册</Text>
                     </TouchableOpacity>
-                    <View style={styles.registWord}>
-                        <View>
-                            <Text>已有账号？</Text>
-                        </View>
-                        <View>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    navigation.navigate('login')
-                                }}
-                            >
-                                <Text style={{ color: '#0085FF' }}>立即登录</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    <AccountButton
+                        navigation={navigation}
+                        route={'login'}
+                        text={'登录'}
+                    />
                 </View>
             </View>
         )
@@ -188,10 +161,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         letterSpacing: 3,
         fontWeight: 'normal'
-    },
-    registWord: {
-        flexDirection: 'row',
-        marginTop: 10
     },
     divide1: {
         height: .5,
