@@ -55,6 +55,7 @@ export default class SubmitFeedback extends Component {
     render() {
         const { productsName, selected } = this.state
         const { navigation } = this.props
+        console.disableYellowBox = true
         if (productsName.length === 0) this.getProducts()
         return (
             <Container>
@@ -67,7 +68,7 @@ export default class SubmitFeedback extends Component {
                         <Right style={{ marginRight: 10 }}>
                             <Picker
                                 note
-                                mode="dropdown"
+                                mode="dialog"
                                 style={{ width: 130 }}
                                 selectedValue={selected}
                                 onValueChange={this.onValueChange}

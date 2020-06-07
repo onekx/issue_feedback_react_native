@@ -1,26 +1,36 @@
 import React, { Component } from 'react'
 import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
 import { StyleSheet } from 'react-native'
+import moment from 'moment'
 
-class ClosedFeedback extends Component {
-    render() {
-        return (
-            <Card transparent style={styles.cardBorder}>
-                <CardItem>
-                    <Icon type="FontAwesome" name="exclamation-circle" style={styles.iconColor} />
-                    <Left>
-                        <Text style={styles.textColor}>onekx</Text>
-                    </Left>
-                    <Right>
-                        <Text style={styles.textColor}>3天前</Text>
-                    </Right>
-                </CardItem>
-                <CardItem>
-                    <Text style={styles.textMargin}>关于软件的BUG</Text>
-                </CardItem>
-            </Card>
-        )
+const ClosedFeedback = ({ name, time, title }) => {
+    const getLocalTime = (time) => {
+        const localTime = moment.utc(time).toDate()
+        const md = moment(localTime).format('M月D日')
+        const hm = moment(localTime).format('H:mm')
+        return {
+            month: md,
+            hours: hm
+        }
     }
+
+    return (
+        <Card transparent style={styles.cardBorder}>
+            <CardItem>
+                <Icon type="FontAwesome" name="exclamation-circle" style={styles.iconColor} />
+                <Left>
+                    <Text style={styles.textColor}>{name}</Text>
+                </Left>
+                <Right>
+                    <Text style={styles.textColor}>{getLocalTime(time).month}</Text>
+                    <Text style={styles.textColor}>{getLocalTime(time).hours}</Text>
+                </Right>
+            </CardItem>
+            <CardItem>
+                <Text style={styles.textMargin}>{title}</Text>
+            </CardItem>
+        </Card>
+    )
 }
 
 const styles = StyleSheet.create({
