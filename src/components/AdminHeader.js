@@ -19,15 +19,9 @@ class AdminHeader extends Component {
                         <Icon name='menu' />
                     </Button>
                 </Left>
-                <Body>
+                <Body style={{marginLeft: 60}}>
                     <Title>{title}</Title>
                 </Body>
-                <Right>
-                    <Button transparent 
-                        onPress={() => this.logoutAccount()}>
-                        <Icon type="AntDesign" name='logout' />
-                    </Button>
-                </Right>
             </Header>
         )}
 }

@@ -31,15 +31,6 @@ class CreateProduct extends Component {
             Alert.alert('创建成功!')
             this.clearInput()
         } else Alert.alert(res.message)
-        // Request('/product', data, 'post')
-        // .then(res => {
-        //     if(res.ok) {
-        //         Alert.alert('创建成功!')
-        //         this.clearInput()
-        //     } else {
-        //         Alert.alert('创建失败!')
-        //     }
-        // })
     }
 
     render() {

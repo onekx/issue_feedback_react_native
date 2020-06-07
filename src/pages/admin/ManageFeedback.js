@@ -1,17 +1,24 @@
 import React, { Component } from 'react'
-import { Container, Content, Text } from 'native-base'
+import { Container, Content, Tab, Tabs } from 'native-base'
+import ClosedFeedback from '../admin/ClosedFeedback'
+import OpeningFeedback from '../admin/OpeningFeedback'
 import AdminHeader from '../../components/AdminHeader'
 
 class ManageFeedback extends Component {
     render() {
         const { navigation } = this.props
-        return(
+        return (
             <Container>
                 <AdminHeader title="管理反馈" navigation={navigation} />
                 <Content>
-                    <Text>
-                        管理反馈
-                    </Text>
+                    <Tabs>
+                        <Tab heading="待解决">
+                            <OpeningFeedback />
+                        </Tab>
+                        <Tab heading="已关闭">
+                            <ClosedFeedback />
+                        </Tab>
+                    </Tabs>
                 </Content>
             </Container>
         )

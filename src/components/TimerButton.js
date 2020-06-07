@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableOpacity, Alert } from 'react-native'
-import Request from '../api/Request'
 import DeviceStorage from '../utils/DeviceStorage'
 
 export default class TimerButton extends Component {
