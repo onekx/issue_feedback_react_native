@@ -13,21 +13,15 @@ class AdminHeader extends Component {
     render() {
         const { navigation, title } = this.props
         return(
-            <Header>
+            <Header style={{backgroundColor:'#336699'}}>
                 <Left>
                     <Button transparent onPress={() => navigation.openDrawer()}>
                         <Icon name='menu' />
                     </Button>
                 </Left>
-                <Body>
+                <Body style={{marginLeft: 60}}>
                     <Title>{title}</Title>
                 </Body>
-                <Right>
-                    <Button transparent 
-                        onPress={() => this.logoutAccount()}>
-                        <Icon type="AntDesign" name='logout' />
-                    </Button>
-                </Right>
             </Header>
         )}
 }

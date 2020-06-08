@@ -31,15 +31,6 @@ class CreateProduct extends Component {
             Alert.alert('创建成功!')
             this.clearInput()
         } else Alert.alert(res.message)
-        // Request('/product', data, 'post')
-        // .then(res => {
-        //     if(res.ok) {
-        //         Alert.alert('创建成功!')
-        //         this.clearInput()
-        //     } else {
-        //         Alert.alert('创建失败!')
-        //     }
-        // })
     }
 
     render() {
@@ -94,7 +85,7 @@ const styles = StyleSheet.create({
     createButton: {
         marginTop: 15,
         height: 35,
-        backgroundColor: '#3F51B5',
+        backgroundColor: '#336699',
         borderRadius: 3,
         width: 250
     },

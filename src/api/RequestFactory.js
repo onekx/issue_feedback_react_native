@@ -56,6 +56,24 @@ export const update_profile = async (id, data) => {
 
 // 用户提交评论
 export const submit_comment = async (data) => {
-    const result = await BaseRequest('/comment', data, 'post')
+    const result = await BaseRequest('/comment', data, 'POST')
+    return result
+}
+
+// 管理人员给反馈打标签
+export const set_tag= async (id, data) => {
+    const result = await BaseRequest(`/issue/${id}/tag`, data, 'PUT')
+    return result
+}
+
+// 获取所有标签
+export const get_tag= async () => {
+    const result = await BaseRequest('/tags')
+    return result
+}
+
+// 通过 issue_id 查询反馈信息
+export const issue_by_id= async (id) => {
+    const result = await BaseRequest(`/issue/${id}`)
     return result
 }
