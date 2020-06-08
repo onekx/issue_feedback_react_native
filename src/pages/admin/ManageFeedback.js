@@ -51,6 +51,7 @@ class ManageFeedback extends Component {
 
     _renderIssues = () => {
         const { issuesArr } = this.state
+        const { navigation } = this.props
         const currentIssues = []
         issuesArr.forEach(value => {
             currentIssues.push(
@@ -58,6 +59,7 @@ class ManageFeedback extends Component {
                     time={value.created_at}
                     name={value.owner.nickname}
                     title={value.title}
+                    navigation={navigation}
                 />
             )
         })

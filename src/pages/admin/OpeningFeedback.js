@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
+import { Card, CardItem, Text, Icon, Right, Left, Button } from 'native-base'
 import { StyleSheet } from 'react-native'
 import moment from 'moment'
 
-const ClosedFeedback = ({ name, time, title }) => {
+const ClosedFeedback = ({ name, time, title, navigation }) => {
     const getLocalTime = (time) => {
         const localTime = moment.utc(time).toDate()
         const md = moment(localTime).format('M月D日')
@@ -26,7 +26,7 @@ const ClosedFeedback = ({ name, time, title }) => {
                     <Text style={styles.textColor}>{getLocalTime(time).hours}</Text>
                 </Right>
             </CardItem>
-            <CardItem>
+            <CardItem button onPress={() => navigation.navigate('adminFeedbackDetail')}>
                 <Text style={styles.textMargin}>{title}</Text>
             </CardItem>
         </Card>
