@@ -6,6 +6,7 @@ import {
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import Modal from 'react-native-modal'
 import { get_tag, set_tag, issue_by_id } from '../../api/RequestFactory'
+import { addColor, changeColor } from '../../components/LabelColor'
 
 class FeedbackDetail extends Component {
     state = {
@@ -21,48 +22,16 @@ class FeedbackDetail extends Component {
         this.getIssueContent()
     }
 
-    changeColor = (value) => {
-        let color = ''
-        switch (value.name) {
-            case 'Bug':
-                color = '#D73A4A'
-                break
-            case 'Ducumentation':
-                color = '#0075CA'
-                break
-            case 'Duplication':
-                color = '#CFD3D7'
-                break
-            case 'Enhancement':
-                color = '#A2EEEF'
-                break
-            case 'Help Wanted':
-                color = '#008672'
-                break
-            case 'Question':
-                color = '#D876E3'
-                break
-            case 'Invalid':
-                color = '#E4E669'
-                break
-            default:
-                color = '#FFFFFF'
-                break
-        }
-        return color
-    }
-
     _renderTags = () => {
         const { issueTags } = this.state
         const tagsArr = []
         issueTags.forEach(tag => {
-            if (tag.checked) {
+            if (tag.checked)
                 tagsArr.push(
-                    <View style={{ backgroundColor: this.changeColor(tag), marginLeft: 10, borderRadius: 5 }}>
+                    <View style={[{ backgroundColor: changeColor(tag) }, styles.tagView]}>
                         <Text style={{ color: '#fff' }}>{tag.name}</Text>
                     </View>
                 )
-            }
         })
         return tagsArr
     }
@@ -88,43 +57,13 @@ class FeedbackDetail extends Component {
             : console.log(res)
     }
 
-    // 为标签添加颜色
-    addColor = (value) => {
-        switch (value.name) {
-            case 'Bug':
-                value.color = '#D73A4A'
-                break
-            case 'Ducumentation':
-                value.color = '#0075CA'
-                break
-            case 'Duplication':
-                value.color = '#CFD3D7'
-                break
-            case 'Enhancement':
-                value.color = '#A2EEEF'
-                break
-            case 'Help Wanted':
-                value.color = '#008672'
-                break
-            case 'Question':
-                value.color = '#D876E3'
-                break
-            case 'Invalid':
-                value.color = '#E4E669'
-                break
-            default:
-                value.color = '#FFFFFF'
-                break
-        }
-    }
-
     // 获取所有标签并返回带有标签颜色的新数组
     getTags = async () => {
         const res = await get_tag()
         const { tags } = res.result
         const allTags = []
         tags.forEach(value => {
-            this.addColor(value)
+            addColor(value)
             allTags.push(value)
         })
         this.setState({ labels: allTags })
@@ -227,21 +166,18 @@ class FeedbackDetail extends Component {
                         <Separator bordered>
                             <Text style={styles.SeparatorText}>用户评论:</Text>
                         </Separator>
-                        <Card transparent>
-                            <CardItem>
-                                <Text style={{ marginRight: 15 }}>kkk</Text>
-                                <Text note>6月18号   15:30</Text>
-                            </CardItem>
-                            <CardItem>
-                                <Text style={{
-                                    color: '#2c2c2c',
-                                    marginTop: -10
-                                }}>
-                                    这是评论内容
-                                </Text>
-                            </CardItem>
-                            <View style={{ height: .8, backgroundColor: '#c4c4c4' }} />
-                        </Card>
+                    </Card>
+                    <Card transparent>
+                        <CardItem>
+                            <Text style={{ marginRight: 15 }}>kkk</Text>
+                            <Text note>6月18号   15:30</Text>
+                        </CardItem>
+                        <CardItem>
+                            <Text style={{ color: '#2c2c2c', marginTop: -10 }}>
+                                这是评论内容
+                            </Text>
+                        </CardItem>
+                        <View style={styles.divider} />
                     </Card>
                 </Content>
             </Container>
@@ -289,6 +225,14 @@ const styles = StyleSheet.create({
     },
     SeparatorText: {
         fontSize: 15
+    },
+    divider: {
+        height: .8,
+        backgroundColor: '#c4c4c4'
+    },
+    tagView: {
+        marginLeft: 10,
+        borderRadius: 5
     }
 })
 
