@@ -60,6 +60,7 @@ class ManageFeedback extends Component {
                     name={value.owner.nickname}
                     title={value.title}
                     navigation={navigation}
+                    issueId={value.issue_id}
                 />
             )
         })

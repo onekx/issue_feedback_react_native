@@ -3,18 +3,89 @@ import {
     Container, Header, Title, Content, Button, Left, List, Right,
     Body, Icon, Text, Card, CardItem, H3, ListItem, Separator
 } from 'native-base'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import Modal from 'react-native-modal'
-import { get_tag } from '../../api/RequestFactory'
+import { get_tag, set_tag, issue_by_id } from '../../api/RequestFactory'
 
 class FeedbackDetail extends Component {
     state = {
         isModalVisible: false,
-        labels: []
+        labels: [],
+        title: '',
+        content: '',
+        issueTags: []
     }
 
     componentDidMount() {
         this.getTags()
+        this.getIssueContent()
+    }
+
+    changeColor = (value) => {
+        let color = ''
+        switch (value.name) {
+            case 'Bug':
+                color = '#D73A4A'
+                break
+            case 'Ducumentation':
+                color = '#0075CA'
+                break
+            case 'Duplication':
+                color = '#CFD3D7'
+                break
+            case 'Enhancement':
+                color = '#A2EEEF'
+                break
+            case 'Help Wanted':
+                color = '#008672'
+                break
+            case 'Question':
+                color = '#D876E3'
+                break
+            case 'Invalid':
+                color = '#E4E669'
+                break
+            default:
+                color = '#FFFFFF'
+                break
+        }
+        return color
+    }
+
+    _renderTags = () => {
+        const { issueTags } = this.state
+        const tagsArr = []
+        issueTags.forEach(tag => {
+            if (tag.checked) {
+                tagsArr.push(
+                    <View style={{ backgroundColor: this.changeColor(tag), marginLeft: 10, borderRadius: 5 }}>
+                        <Text style={{ color: '#fff' }}>{tag.name}</Text>
+                    </View>
+                )
+            }
+        })
+        return tagsArr
+    }
+
+    getIssueContent = async () => {
+        const { issueId } = this.props.route.params
+        const res = await issue_by_id(issueId)
+        this.setState({
+            title: res.result.title,
+            content: res.result.description,
+            issueTags: res.result.tags
+        })
+    }
+
+    putTag = async (name) => {
+        const { issueId } = this.props.route.params
+        const data = {
+            "issue_id": issueId,
+            "tags_name": [name]
+        }
+        const res = await set_tag(issueId, data)
+        res.ok ? Alert.alert('设置成功！')
+            : console.log(res)
     }
 
     // 为标签添加颜色
@@ -56,7 +127,7 @@ class FeedbackDetail extends Component {
             this.addColor(value)
             allTags.push(value)
         })
-        this.setState({labels: allTags})
+        this.setState({ labels: allTags })
     }
 
     toggleModal = () => {
@@ -73,7 +144,7 @@ class FeedbackDetail extends Component {
                 <ListItem avatar>
                     <View style={[{ backgroundColor: color }, styles.labelItem]} />
                     <Body>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.putTag(name)}>
                             <Text>{name}</Text>
                             <Text note>{description}</Text>
                         </TouchableOpacity>
@@ -87,7 +158,7 @@ class FeedbackDetail extends Component {
 
     render() {
         const { navigation } = this.props
-        const { isModalVisible } = this.state
+        const { isModalVisible, title, content } = this.state
         return (
             <Container>
                 <Modal
@@ -112,7 +183,7 @@ class FeedbackDetail extends Component {
                 <Content>
                     <Card transparent>
                         <CardItem>
-                            <H3>关于播放问题:</H3>
+                            <H3>{`${title}：`}</H3>
                             <Button style={styles.statusButton}>
                                 <Icon type="FontAwesome" name="exclamation-circle" style={styles.statusIcon} />
                                 <Text style={styles.statusText}>Open</Text>
@@ -121,7 +192,7 @@ class FeedbackDetail extends Component {
                         <CardItem>
                             <Body>
                                 <Text style={styles.textColor}>
-                                    这是反馈的详细描述
+                                    {content}
                                 </Text>
                             </Body>
                         </CardItem>
@@ -147,12 +218,7 @@ class FeedbackDetail extends Component {
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Text style={styles.textColor}>label:</Text>
-                            <View style={{ backgroundColor: 'red', marginLeft: 10, borderRadius: 5 }}>
-                                <Text style={{ color: '#fff' }}>Bug</Text>
-                            </View>
-                            <View style={{ backgroundColor: '#A2EEEF', marginLeft: 10, borderRadius: 5 }}>
-                                <Text style={{ color: '#fff' }}>Enhancement</Text>
-                            </View>
+                            {this._renderTags()}
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Text style={styles.textColor}>assignees:</Text>

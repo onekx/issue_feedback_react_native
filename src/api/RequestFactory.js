@@ -71,3 +71,9 @@ export const get_tag= async () => {
     const result = await BaseRequest('/tags')
     return result
 }
+
+// 通过 issue_id 查询反馈信息
+export const issue_by_id= async (id) => {
+    const result = await BaseRequest(`/issue/${id}`)
+    return result
+}
