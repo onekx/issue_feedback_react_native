@@ -59,3 +59,15 @@ export const submit_comment = async (data) => {
     const result = await BaseRequest('/comment', data, 'POST')
     return result
 }
+
+// 管理人员给反馈打标签
+export const set_tag= async (id, data) => {
+    const result = await BaseRequest(`/issue/${id}/tag`, data, 'PUT')
+    return result
+}
+
+// 获取所有标签
+export const get_tag= async () => {
+    const result = await BaseRequest('/tags')
+    return result
+}

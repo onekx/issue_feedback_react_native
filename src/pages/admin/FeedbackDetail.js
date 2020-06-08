@@ -5,11 +5,58 @@ import {
 } from 'native-base'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
-import labelList from '../../components/LabelList'
+import { get_tag } from '../../api/RequestFactory'
 
 class FeedbackDetail extends Component {
     state = {
-        isModalVisible: false
+        isModalVisible: false,
+        labels: []
+    }
+
+    componentDidMount() {
+        this.getTags()
+    }
+
+    // 为标签添加颜色
+    addColor = (value) => {
+        switch (value.name) {
+            case 'Bug':
+                value.color = '#D73A4A'
+                break
+            case 'Ducumentation':
+                value.color = '#0075CA'
+                break
+            case 'Duplication':
+                value.color = '#CFD3D7'
+                break
+            case 'Enhancement':
+                value.color = '#A2EEEF'
+                break
+            case 'Help Wanted':
+                value.color = '#008672'
+                break
+            case 'Question':
+                value.color = '#D876E3'
+                break
+            case 'Invalid':
+                value.color = '#E4E669'
+                break
+            default:
+                value.color = '#FFFFFF'
+                break
+        }
+    }
+
+    // 获取所有标签并返回带有标签颜色的新数组
+    getTags = async () => {
+        const res = await get_tag()
+        const { tags } = res.result
+        const allTags = []
+        tags.forEach(value => {
+            this.addColor(value)
+            allTags.push(value)
+        })
+        this.setState({labels: allTags})
     }
 
     toggleModal = () => {
@@ -18,15 +65,16 @@ class FeedbackDetail extends Component {
     }
 
     _renderLabelList = () => {
-        const labels = []
-        labelList.forEach(label => {
-            let { color, title, description } = label
-            labels.push(
+        const { labels } = this.state
+        const tags = []
+        labels.forEach(label => {
+            let { color, name, description } = label
+            tags.push(
                 <ListItem avatar>
                     <View style={[{ backgroundColor: color }, styles.labelItem]} />
                     <Body>
                         <TouchableOpacity>
-                            <Text>{title}</Text>
+                            <Text>{name}</Text>
                             <Text note>{description}</Text>
                         </TouchableOpacity>
                     </Body>
@@ -34,7 +82,7 @@ class FeedbackDetail extends Component {
                 </ListItem>
             )
         })
-        return labels
+        return tags
     }
 
     render() {
