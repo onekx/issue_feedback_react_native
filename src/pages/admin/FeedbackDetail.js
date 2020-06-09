@@ -5,56 +5,38 @@ import {
 } from 'native-base'
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import Modal from 'react-native-modal'
-import { get_tag, set_tag, issue_by_id } from '../../api/RequestFactory'
+import { get_tag, set_tag, issue_by_id, get_profile, get_developers, assign_issue } from '../../api/RequestFactory'
 import { addColor, changeColor } from '../../components/LabelColor'
 
 class FeedbackDetail extends Component {
     state = {
-        isModalVisible: false,
+        tagModalVisible: false,
+        assignModalVisible: false,
         labels: [],
         title: '',
         content: '',
-        issueTags: []
+        issueTags: [],
+        unspecifiedDeveloper: [],
+        developersId: [],
+        developersName: []
     }
 
     componentDidMount() {
         this.getTags()
         this.getIssueContent()
+        this.getUnspecifiedDeveloper()
     }
 
-    _renderTags = () => {
-        const { issueTags } = this.state
-        const tagsArr = []
-        issueTags.forEach(tag => {
-            if (tag.checked)
-                tagsArr.push(
-                    <View style={[{ backgroundColor: changeColor(tag) }, styles.tagView]}>
-                        <Text style={{ color: '#fff' }}>{tag.name}</Text>
-                    </View>
-                )
-        })
-        return tagsArr
-    }
-
+    // 获取该 issue 的详细信息
     getIssueContent = async () => {
         const { issueId } = this.props.route.params
         const res = await issue_by_id(issueId)
         this.setState({
             title: res.result.title,
             content: res.result.description,
-            issueTags: res.result.tags
+            issueTags: res.result.tags,
+            developersId: res.result.developer_ids
         })
-    }
-
-    putTag = async (name) => {
-        const { issueId } = this.props.route.params
-        const data = {
-            "issue_id": issueId,
-            "tags_name": [name]
-        }
-        const res = await set_tag(issueId, data)
-        res.ok ? Alert.alert('设置成功！')
-            : console.log(res)
     }
 
     // 获取所有标签并返回带有标签颜色的新数组
@@ -69,11 +51,55 @@ class FeedbackDetail extends Component {
         this.setState({ labels: allTags })
     }
 
-    toggleModal = () => {
-        const { isModalVisible } = this.state
-        this.setState({ isModalVisible: !isModalVisible })
+    // 给 issue 设置标签
+    putTag = async (name) => {
+        const { issueId } = this.props.route.params
+        const data = {
+            "issue_id": issueId,
+            "tags_name": [name]
+        }
+        const res = await set_tag(issueId, data)
+        res.ok ? Alert.alert('设置成功！')
+            : console.log(res)
     }
 
+    // 获取未指定的开发人员
+    getUnspecifiedDeveloper = async () => {
+        const { issueId } = this.props.route.params
+        const res = await get_developers(issueId)
+        this.setState({
+            unspecifiedDeveloper: res.result.developers
+        })
+    }
+
+    // 为 issue 指定开发人员
+    assingDeveloper = async (devId) => {
+        const { issueId } = this.props.route.params
+        const data = {
+            "issue_id": issueId,
+            "developer_id": devId
+        }
+        const res = await assign_issue(issueId, data)
+        res.ok ? Alert.alert('指定成功！')
+            : console.log(res)
+    }
+
+    // 在详情页渲染已经存在的标签
+    _renderTags = () => {
+        const { issueTags } = this.state
+        const tagsArr = []
+        issueTags.forEach(tag => {
+            if (tag.checked)
+                tagsArr.push(
+                    <View style={[{ backgroundColor: changeColor(tag) }, styles.tagView]}>
+                        <Text style={{ color: '#fff' }}>{tag.name}</Text>
+                    </View>
+                )
+        })
+        return tagsArr
+    }
+
+    // 在弹出层渲染所有标签
     _renderLabelList = () => {
         const { labels } = this.state
         const tags = []
@@ -95,17 +121,65 @@ class FeedbackDetail extends Component {
         return tags
     }
 
+    // 在弹出层渲染未指定的开发人员
+    _renderDeveloper = () => {
+        const { unspecifiedDeveloper } = this.state
+        const allDev = []
+        if (unspecifiedDeveloper.length === 0) return <Text>没有未指定的开发人员</Text>
+        else {
+            unspecifiedDeveloper.forEach(dev => {
+                allDev.push(
+                    <ListItem avatar>
+                        <Body>
+                            <TouchableOpacity onPress={() => this.assingDeveloper(dev.user_id)}>
+                                <Text>{dev.nickname}</Text>
+                            </TouchableOpacity>
+                        </Body>
+                        <Right />
+                    </ListItem>
+                )
+            })
+            return allDev
+        }
+    }
+
+    // 在详情页渲染已经指定的开发人员
+    _renderAssignees = async () => {
+        const { developersId } = this.state
+        const developer = []
+        if (developersId.length === 0) return <Text />
+        else {
+            for (let item of developersId) {
+                let res = await get_profile(item)
+                let { nickname } = res.result
+                developer.push(
+                    <Text style={{ marginLeft: 10 }}>{nickname}</Text>
+                )
+            }
+            this.setState({ developersName: developer })
+        }
+    }
+
     render() {
         const { navigation } = this.props
-        const { isModalVisible, title, content } = this.state
+        const { tagModalVisible, title, content, assignModalVisible, developersName } = this.state
+        if (developersName.length === 0) this._renderAssignees()
         return (
             <Container>
                 <Modal
-                    isVisible={isModalVisible}
-                    onBackdropPress={() => this.toggleModal()}
+                    isVisible={tagModalVisible}
+                    onBackdropPress={() => this.setState({ tagModalVisible: !tagModalVisible })}
                 >
                     <View style={styles.modalView}>
                         <List>{this._renderLabelList()}</List>
+                    </View>
+                </Modal>
+                <Modal
+                    isVisible={assignModalVisible}
+                    onBackdropPress={() => this.setState({ assignModalVisible: !assignModalVisible })}
+                >
+                    <View style={styles.modalView}>
+                        <List>{this._renderDeveloper()}</List>
                     </View>
                 </Modal>
                 <Header style={styles.headerColor}>
@@ -137,13 +211,13 @@ class FeedbackDetail extends Component {
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Left>
-                                <Button transparent onPress={() => this.toggleModal()}>
+                                <Button transparent onPress={() => this.setState({ tagModalVisible: !tagModalVisible })}>
                                     <Icon type="MaterialCommunityIcons" name="label-variant-outline" />
                                     <Text style={styles.textSpacing}>设置标签</Text>
                                 </Button>
                             </Left>
                             <Body>
-                                <Button transparent>
+                                <Button transparent onPress={() => this.setState({ assignModalVisible: !assignModalVisible })}>
                                     <Icon type="EvilIcons" name="user" />
                                     <Text style={styles.textSpacing}>指定人员</Text>
                                 </Button>
@@ -161,7 +235,7 @@ class FeedbackDetail extends Component {
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Text style={styles.textColor}>assignees:</Text>
-                            <Text style={{ marginLeft: 10 }}>onekx</Text>
+                            {developersName}
                         </CardItem>
                         <Separator bordered>
                             <Text style={styles.SeparatorText}>用户评论:</Text>
