@@ -77,3 +77,15 @@ export const issue_by_id= async (id) => {
     const result = await BaseRequest(`/issue/${id}`)
     return result
 }
+
+// 获取未分配该 issue 的开发人员
+export const get_developers = async (id) => {
+    const result = await BaseRequest(`/issue/${id}/developers`)
+    return result
+}
+
+// 分配 issue 给开发人员
+export const assign_issue = async (id, data) => {
+    const result = await BaseRequest(`/issue/${id}/assign`, data, 'PUT')
+    return result
+}
