@@ -3,28 +3,47 @@ import {
     Container, Header, Title, Content, Button, Left, List, Right,
     Body, Icon, Text, Card, CardItem, H3, ListItem, Separator
 } from 'native-base'
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Alert, TextInput, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modal'
-import { get_tag, set_tag, issue_by_id, get_profile, get_developers, assign_issue } from '../../api/RequestFactory'
+import {
+    get_tag, set_tag, issue_by_id, get_profile,
+    assign_issue, comment, submit_comment, get_developers
+} from '../../api/RequestFactory'
 import { addColor, changeColor } from '../../components/LabelColor'
+import moment from 'moment'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 class FeedbackDetail extends Component {
     state = {
         tagModalVisible: false,
         assignModalVisible: false,
+        commentModalVisible: false,
         labels: [],
         title: '',
         content: '',
         issueTags: [],
         unspecifiedDeveloper: [],
         developersId: [],
-        developersName: []
+        developersName: [],
+        commentList: [],
+        commentText: ''
     }
 
     componentDidMount() {
         this.getTags()
         this.getIssueContent()
         this.getUnspecifiedDeveloper()
+        this.getComment()
+    }
+
+    getLocalTime = (time) => {
+        const localTime = moment.utc(time).toDate()
+        const md = moment(localTime).format('M月D日')
+        const hm = moment(localTime).format('H:mm')
+        return {
+            month: md,
+            hours: hm
+        }
     }
 
     // 获取该 issue 的详细信息
@@ -49,6 +68,14 @@ class FeedbackDetail extends Component {
             allTags.push(value)
         })
         this.setState({ labels: allTags })
+    }
+
+    // 获取该反馈的所有评论
+    getComment = async () => {
+        const { issueId } = this.props.route.params
+        const res = await comment(issueId)
+        res.ok ? this.setState({ commentList: res.result.comments })
+            : console.log(res)
     }
 
     // 给 issue 设置标签
@@ -82,6 +109,25 @@ class FeedbackDetail extends Component {
         const res = await assign_issue(issueId, data)
         res.ok ? Alert.alert('指定成功！')
             : console.log(res)
+    }
+
+    sendComment = async () => {
+        const { commentText } = this.state
+        const { issueId } = this.props.route.params
+        const userId = await DeviceStorage.get('user_id')
+        const data = {
+            "issue_id": issueId,
+            "user_id": userId,
+            "content": commentText
+        }
+        const res = await submit_comment(data)
+        if (res.ok) {
+            Alert.alert('评论成功！')
+            this.setState({
+                commentText: ''
+            })
+        }
+        else console.log(res)
     }
 
     // 在详情页渲染已经存在的标签
@@ -160,9 +206,36 @@ class FeedbackDetail extends Component {
         }
     }
 
+    // 渲染所有评论
+    _renderComment = () => {
+        const { commentList } = this.state
+        const comments = []
+        if (commentList.length === 0) return <Text>目前还没有评论</Text>
+        else {
+            commentList.forEach(comment => {
+                let time = this.getLocalTime(comment.created_at)
+                comments.push(
+                    <Card transparent>
+                        <CardItem>
+                            <Text note style={{ marginRight: 15 }}>{comment.owner.nickname}</Text>
+                            <Text note>{`${time.month}   ${time.hours}`}</Text>
+                        </CardItem>
+                        <CardItem>
+                            <Text style={{ color: '#2c2c2c', marginTop: -10 }}>
+                                {comment.content}
+                            </Text>
+                        </CardItem>
+                        <View style={styles.divider} />
+                    </Card>
+                )
+            })
+            return comments
+        }
+    }
+
     render() {
         const { navigation } = this.props
-        const { tagModalVisible, title, content, assignModalVisible, developersName } = this.state
+        const { tagModalVisible, title, content, assignModalVisible, developersName, commentModalVisible } = this.state
         if (developersName.length === 0) this._renderAssignees()
         return (
             <Container>
@@ -180,6 +253,23 @@ class FeedbackDetail extends Component {
                 >
                     <View style={styles.modalView}>
                         <List>{this._renderDeveloper()}</List>
+                    </View>
+                </Modal>
+                <Modal
+                    isVisible={commentModalVisible}
+                    onBackdropPress={() => this.setState({ commentModalVisible: !commentModalVisible })}
+                >
+                    <View style={styles.modalContent}>
+                        <TextInput
+                            multiline
+                            autoFocus
+                            onChangeText={value => this.setState({ commentText: value })}
+                        />
+                        <TouchableHighlight style={styles.sendBtn}
+                            onPress={() => this.sendComment()}
+                        >
+                            <Text style={styles.sendText}>发送</Text>
+                        </TouchableHighlight>
                     </View>
                 </Modal>
                 <Header style={styles.headerColor}>
@@ -223,7 +313,7 @@ class FeedbackDetail extends Component {
                                 </Button>
                             </Body>
                             <Right>
-                                <Button transparent>
+                                <Button transparent onPress={() => this.setState({ commentModalVisible: !commentModalVisible })}>
                                     <Icon type="FontAwesome" name="comment-o" />
                                     <Text style={styles.textSpacing}>评论</Text>
                                 </Button>
@@ -241,18 +331,7 @@ class FeedbackDetail extends Component {
                             <Text style={styles.SeparatorText}>用户评论:</Text>
                         </Separator>
                     </Card>
-                    <Card transparent>
-                        <CardItem>
-                            <Text style={{ marginRight: 15 }}>kkk</Text>
-                            <Text note>6月18号   15:30</Text>
-                        </CardItem>
-                        <CardItem>
-                            <Text style={{ color: '#2c2c2c', marginTop: -10 }}>
-                                这是评论内容
-                            </Text>
-                        </CardItem>
-                        <View style={styles.divider} />
-                    </Card>
+                    {this._renderComment()}
                 </Content>
             </Container>
         )
@@ -261,7 +340,6 @@ class FeedbackDetail extends Component {
 
 const styles = StyleSheet.create({
     modalView: {
-        height: 520,
         backgroundColor: '#fff',
         borderRadius: 10
     },
@@ -307,6 +385,25 @@ const styles = StyleSheet.create({
     tagView: {
         marginLeft: 10,
         borderRadius: 5
+    },
+    modalContent: {
+        height: 150,
+        backgroundColor: '#fff'
+    },
+    sendBtn: {
+        height: 30,
+        width: 50,
+        backgroundColor: '#2C71FF',
+        borderRadius: 4,
+        position: 'absolute',
+        bottom: 15,
+        right: 15,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    sendText: {
+        color: '#fff',
+        fontSize: 14
     }
 })
 
