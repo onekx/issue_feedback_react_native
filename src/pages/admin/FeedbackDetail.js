@@ -3,13 +3,10 @@ import {
     Container, Header, Title, Content, Button, Left, List, Right,
     Body, Icon, Text, Card, CardItem, H3, ListItem, Separator
 } from 'native-base'
-import { View, StyleSheet, TouchableOpacity, Alert, TextInput, TouchableHighlight } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, TextInput, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modal'
-import {
-    get_tag, set_tag, issue_by_id, get_profile,
-    assign_issue, comment, submit_comment, get_developers
-} from '../../api/RequestFactory'
-import { addColor, changeColor } from '../../components/LabelColor'
+import { get_tag, set_tag, issue_by_id, assign_issue, comment, submit_comment, get_developers } from '../../api/RequestFactory'
+import { changeColor } from '../../components/LabelColor'
 import moment from 'moment'
 import DeviceStorage from '../../utils/DeviceStorage'
 
@@ -79,7 +76,7 @@ class FeedbackDetail extends Component {
         const { issueId } = this.props.route.params
         const data = { "tags_name": [name] }
         const res = await set_tag(issueId, data)
-        if( res.ok) {
+        if (res.ok) {
             this.setState({ tagModalVisible: false })
             this.getIssueContent()
         } else console.log(res)
