@@ -89,3 +89,15 @@ export const assign_issue = async (id, data) => {
     const result = await BaseRequest(`/issue/${id}/assign`, data, 'PUT')
     return result
 }
+
+// 获取该管理人员创建的产品
+export const products_by_manager = async (id) => {
+    const result = await BaseRequest(`/product/manager/${id}`)
+    return result
+}
+
+// 删除产品
+export const delete_product = async (id, data) => {
+    const result = await BaseRequest(`/product/${id}`, data, 'DELETE')
+    return result
+}

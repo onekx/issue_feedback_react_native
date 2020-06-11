@@ -3,7 +3,7 @@ import { Header, Left, Body, Right, Button, Title, Icon } from 'native-base'
 
 const HeaderModel = ({ navigation, title }) => {
     return (
-        <Header>
+        <Header style={{ backgroundColor: '#336699' }}>
             <Left>
                 <Button transparent onPress={() => navigation.goBack()}>
                     <Icon type="AntDesign" name='arrowleft' />
