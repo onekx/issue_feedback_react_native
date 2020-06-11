@@ -30,9 +30,15 @@ export const comment = async (id) => {
     return result
 }
 
-// 获取某一个产品的所有反馈
+// 获取某一个产品所有待解决的反馈
 export const feedbacks = async (id) => {
     const result = await BaseRequest(`/issue/product/${id}?status=opening`)
+    return result
+}
+
+// 获取某一个产品所有已关闭的反馈
+export const feedbacks_closed = async (id) => {
+    const result = await BaseRequest(`/issue/product/${id}?status=closed`)
     return result
 }
 
@@ -99,5 +105,11 @@ export const products_by_manager = async (id) => {
 // 删除产品
 export const delete_product = async (id, data) => {
     const result = await BaseRequest(`/product/${id}`, data, 'DELETE')
+    return result
+}
+
+// 修改反馈状态
+export const change_status = async (id, data) => {
+    const result = await BaseRequest(`/issue/${id}/status`, data, 'PUT')
     return result
 }

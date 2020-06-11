@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Content, Tab, Tabs, Form, Text } from 'native-base'
+import { Container, Content, Tab, Tabs, Form } from 'native-base'
 import { StyleSheet, Picker } from 'react-native'
-import ClosedFeedback from '../admin/ClosedFeedback'
-import OpeningFeedback from '../admin/OpeningFeedback'
+import AdminFeedback from '../../components/AdminFeedback'
 import AdminHeader from '../../components/AdminHeader'
-import { products, feedbacks } from '../../api/RequestFactory'
+import { products, feedbacks, feedbacks_closed } from '../../api/RequestFactory'
 
 class ManageFeedback extends Component {
     state = {
@@ -12,6 +11,7 @@ class ManageFeedback extends Component {
         productsName: [],
         productsId: [],
         issuesArr: [],
+        closedIssues: [],
         refresh: true
     }
 
@@ -37,9 +37,11 @@ class ManageFeedback extends Component {
         const { productsId, selected } = this.state
         const id = productsId[selected]
         if (id != undefined) {
-            const res = await feedbacks(id)
+            const opening = await feedbacks(id)
+            const closed = await feedbacks_closed(id)
             this.setState({
-                issuesArr: res.result.issues,
+                issuesArr: opening.result.issues,
+                closedIssues: closed.result.issues,
                 refresh: false
             })
         }
@@ -54,18 +56,18 @@ class ManageFeedback extends Component {
         return names
     }
 
-    _renderIssues = () => {
-        const { issuesArr } = this.state
+    _renderIssues = (issues, status) => {
         const { navigation } = this.props
         const currentIssues = []
-        issuesArr.forEach(value => {
+        issues.forEach(value => {
             currentIssues.push(
-                <OpeningFeedback
+                <AdminFeedback
                     time={value.created_at}
                     name={value.owner.nickname}
                     title={value.title}
                     navigation={navigation}
                     issueId={value.issue_id}
+                    status={status}
                 />
             )
         })
@@ -78,7 +80,7 @@ class ManageFeedback extends Component {
 
     render() {
         const { navigation } = this.props
-        const { selected, refresh } = this.state
+        const { selected, refresh, issuesArr, closedIssues } = this.state
         console.disableYellowBox = true
         if(refresh) this.getIssues()
         return (
@@ -102,13 +104,13 @@ class ManageFeedback extends Component {
                             activeTabStyle={{ backgroundColor: '#336699' }}
 
                         >
-                            {this._renderIssues()}
+                            {this._renderIssues(issuesArr, 'opening')}
                         </Tab>
                         <Tab heading="已关闭"
                             tabStyle={{ backgroundColor: '#336699' }}
                             activeTabStyle={{ backgroundColor: '#336699' }}
                         >
-                            <ClosedFeedback />
+                            {this._renderIssues(closedIssues, 'closed')}
                         </Tab>
                     </Tabs>
                 </Content>

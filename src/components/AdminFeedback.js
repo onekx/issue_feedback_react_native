@@ -1,9 +1,9 @@
 import React from 'react'
-import { Card, CardItem, Text, Icon, Right, Left, Button } from 'native-base'
+import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
 import { StyleSheet } from 'react-native'
 import moment from 'moment'
 
-const ClosedFeedback = ({ name, time, title, navigation, issueId }) => {
+const ClosedFeedback = ({ name, time, title, navigation, issueId, status }) => {
     const getLocalTime = (time) => {
         const localTime = moment.utc(time).toDate()
         const md = moment(localTime).format('M月D日')
@@ -14,10 +14,17 @@ const ClosedFeedback = ({ name, time, title, navigation, issueId }) => {
         }
     }
 
+    const checkStatus = (nowStatus) => {
+        if (nowStatus === 'opening')
+            return <Icon type="FontAwesome" name="exclamation-circle" style={styles.openColor} />
+        else
+            return <Icon type="FontAwesome" name="check-circle-o" style={styles.closedColor} />
+    }
+
     return (
         <Card transparent style={styles.cardBorder}>
             <CardItem>
-                <Icon type="FontAwesome" name="exclamation-circle" style={styles.iconColor} />
+                {checkStatus(status)}
                 <Left>
                     <Text style={styles.textColor}>{name}</Text>
                 </Left>
@@ -26,7 +33,7 @@ const ClosedFeedback = ({ name, time, title, navigation, issueId }) => {
                     <Text style={styles.textColor}>{getLocalTime(time).hours}</Text>
                 </Right>
             </CardItem>
-            <CardItem button onPress={() => navigation.navigate('adminFeedbackDetail',{issueId: issueId})}>
+            <CardItem button onPress={() => navigation.navigate('adminFeedbackDetail', { issueId: issueId })}>
                 <Text style={styles.textMargin}>{title}</Text>
             </CardItem>
         </Card>
@@ -38,8 +45,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: .9,
         borderBottomColor: '#c4c4c4'
     },
-    iconColor: {
+    openColor: {
         color: '#28a745'
+    },
+    closedColor: {
+        color: '#cb2431'
     },
     textColor: {
         color: '#586069'

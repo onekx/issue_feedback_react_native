@@ -5,7 +5,10 @@ import {
 } from 'native-base'
 import { View, StyleSheet, TouchableOpacity, TextInput, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modal'
-import { get_tag, set_tag, issue_by_id, assign_issue, comment, submit_comment, get_developers } from '../../api/RequestFactory'
+import {
+    get_tag, set_tag, issue_by_id, assign_issue,
+    comment, submit_comment, get_developers, change_status
+} from '../../api/RequestFactory'
 import { changeColor } from '../../components/LabelColor'
 import moment from 'moment'
 import DeviceStorage from '../../utils/DeviceStorage'
@@ -24,7 +27,7 @@ class FeedbackDetail extends Component {
         developersName: [],
         commentList: [],
         commentText: '',
-        refresh: true
+        status: ''
     }
 
     componentDidMount() {
@@ -52,7 +55,8 @@ class FeedbackDetail extends Component {
             title: res.result.title,
             content: res.result.description,
             issueTags: res.result.tags,
-            developers: res.result.developers
+            developers: res.result.developers,
+            status: res.result.status
         })
     }
 
@@ -120,6 +124,44 @@ class FeedbackDetail extends Component {
             this.getComment()
         }
         else console.log(res)
+    }
+
+    changeStatus = async () => {
+        const { status } = this.state
+        const userId = await DeviceStorage.get('user_id')
+        const { issueId } = this.props.route.params
+        let newStatus = ''
+        if (status === 'opening') newStatus = 'closed'
+        else newStatus = 'opening'
+        const data = {
+            "user_id": userId,
+            "status": newStatus
+        }
+        const res = await change_status(issueId, data)
+        if (res.ok) {
+            this.setState({status: !this.state.status})
+            this.getIssueContent()
+        } else console.log(res)
+    }
+
+    // 渲染状态按钮
+    _renderStatusBtn = () => {
+        const { status } = this.state
+        if (status === 'opening') {
+            return (
+                <Button style={styles.openButton} onPress={() => this.changeStatus()}>
+                    <Icon type="FontAwesome" name="exclamation-circle" style={styles.statusIcon} />
+                    <Text style={styles.statusText}>open</Text>
+                </Button>
+            )
+        } else {
+            return (
+                <Button style={styles.closedButton}>
+                    <Icon type="FontAwesome" name="check-circle-o" style={styles.statusIcon} />
+                    <Text style={styles.statusText}>closed</Text>
+                </Button>
+            )
+        }
     }
 
     // 在详情页渲染已经存在的标签
@@ -225,7 +267,7 @@ class FeedbackDetail extends Component {
 
     render() {
         const { navigation } = this.props
-        const { tagModalVisible, title, content, assignModalVisible, issueTags, commentModalVisible, refresh } = this.state
+        const { tagModalVisible, title, content, assignModalVisible, commentModalVisible, status } = this.state
         return (
             <Container>
                 <Modal
@@ -276,10 +318,7 @@ class FeedbackDetail extends Component {
                     <Card transparent>
                         <CardItem>
                             <H3>{`${title}：`}</H3>
-                            <Button style={styles.statusButton}>
-                                <Icon type="FontAwesome" name="exclamation-circle" style={styles.statusIcon} />
-                                <Text style={styles.statusText}>Open</Text>
-                            </Button>
+                            {this._renderStatusBtn()}
                         </CardItem>
                         <CardItem>
                             <Body>
@@ -340,10 +379,16 @@ const styles = StyleSheet.create({
     headerColor: {
         backgroundColor: '#336699'
     },
-    statusButton: {
+    openButton: {
         backgroundColor: '#28a745',
         height: 25,
         width: 68,
+        marginLeft: 20
+    },
+    closedButton: {
+        backgroundColor: '#cb2431',
+        height: 25,
+        width: 80,
         marginLeft: 20
     },
     statusIcon: {
