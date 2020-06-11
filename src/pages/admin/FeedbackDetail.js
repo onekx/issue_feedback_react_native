@@ -23,10 +23,11 @@ class FeedbackDetail extends Component {
         content: '',
         issueTags: [],
         unspecifiedDeveloper: [],
-        developersId: [],
+        developers: [],
         developersName: [],
         commentList: [],
-        commentText: ''
+        commentText: '',
+        refresh: true
     }
 
     componentDidMount() {
@@ -54,7 +55,7 @@ class FeedbackDetail extends Component {
             title: res.result.title,
             content: res.result.description,
             issueTags: res.result.tags,
-            developersId: res.result.developer_ids
+            developers: res.result.developers
         })
     }
 
@@ -62,12 +63,7 @@ class FeedbackDetail extends Component {
     getTags = async () => {
         const res = await get_tag()
         const { tags } = res.result
-        const allTags = []
-        tags.forEach(value => {
-            addColor(value)
-            allTags.push(value)
-        })
-        this.setState({ labels: allTags })
+        this.setState({ labels: tags })
     }
 
     // 获取该反馈的所有评论
@@ -81,13 +77,12 @@ class FeedbackDetail extends Component {
     // 给 issue 设置标签
     putTag = async (name) => {
         const { issueId } = this.props.route.params
-        const data = {
-            "issue_id": issueId,
-            "tags_name": [name]
-        }
+        const data = { "tags_name": [name] }
         const res = await set_tag(issueId, data)
-        res.ok ? Alert.alert('设置成功！')
-            : console.log(res)
+        if( res.ok) {
+            this.setState({ tagModalVisible: false })
+            this.getIssueContent()
+        } else console.log(res)
     }
 
     // 获取未指定的开发人员
@@ -102,13 +97,12 @@ class FeedbackDetail extends Component {
     // 为 issue 指定开发人员
     assingDeveloper = async (devId) => {
         const { issueId } = this.props.route.params
-        const data = {
-            "issue_id": issueId,
-            "developer_id": devId
-        }
+        const data = { "developer_ids": [devId] }
         const res = await assign_issue(issueId, data)
-        res.ok ? Alert.alert('指定成功！')
-            : console.log(res)
+        if (res.ok) {
+            this.setState({ assignModalVisible: false })
+            this.getIssueContent()
+        } else console.log(res)
     }
 
     sendComment = async () => {
@@ -122,10 +116,11 @@ class FeedbackDetail extends Component {
         }
         const res = await submit_comment(data)
         if (res.ok) {
-            Alert.alert('评论成功！')
             this.setState({
-                commentText: ''
+                commentText: '',
+                commentModalVisible: false
             })
+            this.getComment()
         }
         else console.log(res)
     }
@@ -190,19 +185,17 @@ class FeedbackDetail extends Component {
     }
 
     // 在详情页渲染已经指定的开发人员
-    _renderAssignees = async () => {
-        const { developersId } = this.state
+    _renderAssignees = () => {
+        const { developers } = this.state
         const developer = []
-        if (developersId.length === 0) return <Text />
+        if (developers.length === 0) return <Text />
         else {
-            for (let item of developersId) {
-                let res = await get_profile(item)
-                let { nickname } = res.result
+            developers.forEach(dev => {
                 developer.push(
-                    <Text style={{ marginLeft: 10 }}>{nickname}</Text>
+                    <Text style={{ marginLeft: 10 }}>{dev.nickname}</Text>
                 )
-            }
-            this.setState({ developersName: developer })
+            })
+            return developer
         }
     }
 
@@ -235,8 +228,7 @@ class FeedbackDetail extends Component {
 
     render() {
         const { navigation } = this.props
-        const { tagModalVisible, title, content, assignModalVisible, developersName, commentModalVisible } = this.state
-        if (developersName.length === 0) this._renderAssignees()
+        const { tagModalVisible, title, content, assignModalVisible, issueTags, commentModalVisible, refresh } = this.state
         return (
             <Container>
                 <Modal
@@ -325,7 +317,7 @@ class FeedbackDetail extends Component {
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Text style={styles.textColor}>assignees:</Text>
-                            {developersName}
+                            {this._renderAssignees()}
                         </CardItem>
                         <Separator bordered>
                             <Text style={styles.SeparatorText}>用户评论:</Text>

@@ -11,13 +11,15 @@ class ManageFeedback extends Component {
         selected: 0,
         productsName: [],
         productsId: [],
-        issuesArr: []
+        issuesArr: [],
+        refresh: true
     }
 
     onValueChange = (value) => {
         this.setState({
             selected: value,
-            issuesArr: []
+            issuesArr: [],
+            refresh: true
         })
     }
 
@@ -36,7 +38,10 @@ class ManageFeedback extends Component {
         const id = productsId[selected]
         if (id != undefined) {
             const res = await feedbacks(id)
-            this.setState({issuesArr: res.result.issues})
+            this.setState({
+                issuesArr: res.result.issues,
+                refresh: false
+            })
         }
     }
 
@@ -73,9 +78,9 @@ class ManageFeedback extends Component {
 
     render() {
         const { navigation } = this.props
-        const { selected, issuesArr } = this.state
+        const { selected, refresh } = this.state
         console.disableYellowBox = true
-        if(issuesArr.length === 0) this.getIssues()
+        if(refresh) this.getIssues()
         return (
             <Container>
                 <AdminHeader title="管理反馈" navigation={navigation} />
