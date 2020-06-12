@@ -113,3 +113,9 @@ export const change_status = async (id, data) => {
     const result = await BaseRequest(`/issue/${id}/status`, data, 'PUT')
     return result
 }
+
+// 更新产品信息
+export const update_product = async (id, data) => {
+    const result = await BaseRequest(`/product/${id}`, data, 'PUT')
+    return result
+}
