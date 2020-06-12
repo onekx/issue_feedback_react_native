@@ -4,19 +4,27 @@ import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { create } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import AdminHeader from '../../components/AdminHeader'
-import { products_by_manager, delete_product } from '../../api/RequestFactory'
+import { products_by_manager, delete_product, update_product } from '../../api/RequestFactory'
+import Modal from 'react-native-modal'
+
+let id = ''
 
 class ManageProduct extends Component {
     state = {
         productName: '',
         productDes: '',
-        products: []
+        products: [],
+        updateName: '',
+        updateDes: '',
+        modalVisible: false
     }
 
     clearInput = () => {
         this.setState({
             productName: '',
-            productDes: ''
+            productDes: '',
+            updateName: '',
+            updateDes: ''
         })
     }
 
@@ -29,6 +37,28 @@ class ManageProduct extends Component {
         const res = await products_by_manager(id)
         res.ok ? this.setState({ products: res.result.products })
             : console.log(res)
+    }
+
+    // 保存正在处理的产品 id
+    currentId = (productId) => {
+        id = productId
+    }
+
+    updateProduct = async () => {
+        const { updateName, updateDes } = this.state
+        const productID = id
+        const userId = await DeviceStorage.get("user_id")
+        const data = {
+            "manager_id": userId,
+            "name": updateName,
+            "description": updateDes
+        }
+        const res = await update_product(productID, data)
+        if (res.ok) {
+            this.clearInput()
+            this.setState({ modalVisible: false })
+            this.getProducts()
+        } else console.log(res)
     }
 
     deleteProduct = async (productId) => {
@@ -49,6 +79,11 @@ class ManageProduct extends Component {
                         <Text style={styles.proText}>{item.name}</Text>
                         <Text note>{item.description}</Text>
                     </Body>
+                    <Button transparent onPress={() => this.setState({
+                        modalVisible: true
+                    }, this.currentId(item.product_id))}>
+                        <Text>修改</Text>
+                    </Button>
                     <Button transparent onPress={() => this.deleteProduct(item.product_id)}>
                         <Text>删除</Text>
                     </Button>
@@ -58,7 +93,7 @@ class ManageProduct extends Component {
         return productsList
     }
 
-    _createProduct = async () => {
+    createProduct = async () => {
         const { productDes, productName } = this.state
         const id = await DeviceStorage.get("user_id")
         const data = {
@@ -75,7 +110,7 @@ class ManageProduct extends Component {
 
     render() {
         const { navigation } = this.props
-        const { productDes, productName } = this.state
+        const { productDes, productName, modalVisible, updateDes, updateName } = this.state
         return (
             <Container>
                 <AdminHeader title="管理产品" navigation={navigation} />
@@ -83,34 +118,54 @@ class ManageProduct extends Component {
                     <Form>
                         <Item stackedLabel>
                             <Label>产品名称</Label>
-                            <Input onChangeText={value => {
-                                this.setState({
-                                    productName: value
-                                })
-                            }}
-                                value={productName}
+                            <Input value={productName}
+                                onChangeText={value => this.setState({ productName: value })}
                             />
                         </Item>
                         <Item stackedLabel last>
                             <Label>产品描述</Label>
-                            <Input onChangeText={value => {
-                                this.setState({
-                                    productDes: value
-                                })
-                            }}
-                                value={productDes}
+                            <Input value={productDes}
+                                onChangeText={value => this.setState({ productDes: value })}
                             />
                         </Item>
                     </Form>
                     <View style={styles.buttonView}>
-                        <TouchableOpacity style={styles.createButton}
-                            onPress={this._createProduct}
+                        <TouchableOpacity
+                            style={styles.TouchButton}
+                            onPress={() => this.createProduct()}
                         >
-                            <Text style={styles.text}>
-                                创建产品
-                            </Text>
+                            <Text style={styles.text}>创建产品</Text>
                         </TouchableOpacity>
                     </View>
+                    <Modal
+                        isVisible={modalVisible}
+                        onBackdropPress={() => this.setState({ modalVisible: !modalVisible })}
+                    >
+                        <View style={{ backgroundColor: '#fff' }}>
+                            <Form>
+                                <Item stackedLabel>
+                                    <Label>产品名称</Label>
+                                    <Input value={updateName}
+                                        onChangeText={value => this.setState({ updateName: value })}
+                                    />
+                                </Item>
+                                <Item stackedLabel last>
+                                    <Label>产品描述</Label>
+                                    <Input value={updateDes}
+                                        onChangeText={value => this.setState({ updateDes: value })}
+                                    />
+                                </Item>
+                            </Form>
+                            <View style={styles.buttonView}>
+                                <TouchableOpacity
+                                    style={styles.TouchButton}
+                                    onPress={() => this.updateProduct()}
+                                >
+                                    <Text style={styles.text}>修改</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
                     <Separator bordered>
                         <Text note>拥有的产品：</Text>
                     </Separator>
@@ -127,13 +182,13 @@ const styles = StyleSheet.create({
     buttonView: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginBottom: 20
+        marginBottom: 10
     },
-    createButton: {
+    TouchButton: {
         marginTop: 15,
         height: 35,
-        backgroundColor: '#336699',
-        borderRadius: 3,
+        backgroundColor: '#0099CC',
+        borderRadius: 5,
         width: 250
     },
     text: {

@@ -9,7 +9,6 @@ import {
     get_tag, set_tag, issue_by_id, assign_issue,
     comment, submit_comment, get_developers, change_status
 } from '../../api/RequestFactory'
-import { changeColor } from '../../components/LabelColor'
 import moment from 'moment'
 import DeviceStorage from '../../utils/DeviceStorage'
 
@@ -171,7 +170,7 @@ class FeedbackDetail extends Component {
         issueTags.forEach(tag => {
             if (tag.checked)
                 tagsArr.push(
-                    <View style={[{ backgroundColor: changeColor(tag) }, styles.tagView]}>
+                    <View style={[{ backgroundColor: tag.color }, styles.tagView]}>
                         <Text style={{ color: '#fff' }}>{tag.name}</Text>
                     </View>
                 )
@@ -329,19 +328,19 @@ class FeedbackDetail extends Component {
                         </CardItem>
                         <CardItem style={styles.itemSpacing}>
                             <Left>
-                                <Button transparent onPress={() => this.setState({ tagModalVisible: !tagModalVisible })}>
+                                <Button transparent onPress={() => this.setState({ tagModalVisible: true })}>
                                     <Icon type="MaterialCommunityIcons" name="label-variant-outline" />
                                     <Text style={styles.textSpacing}>设置标签</Text>
                                 </Button>
                             </Left>
                             <Body>
-                                <Button transparent onPress={() => this.setState({ assignModalVisible: !assignModalVisible })}>
+                                <Button transparent onPress={() => this.setState({ assignModalVisible: true })}>
                                     <Icon type="EvilIcons" name="user" />
                                     <Text style={styles.textSpacing}>指定人员</Text>
                                 </Button>
                             </Body>
                             <Right>
-                                <Button transparent onPress={() => this.setState({ commentModalVisible: !commentModalVisible })}>
+                                <Button transparent onPress={() => this.setState({ commentModalVisible: true })}>
                                     <Icon type="FontAwesome" name="comment-o" />
                                     <Text style={styles.textSpacing}>评论</Text>
                                 </Button>
