@@ -55,11 +55,11 @@ export default class FeedbackDetails extends Component {
         }
         const res = await submit_comment(data)
         if (res.ok) {
-            Alert.alert('评论成功！')
             this.setState({
                 commentText: '',
                 modalVisible: false
             })
+            this.getCommentList()
         }
         else console.log(res)
     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {
     Container, Header, Title, Content, Button, Left, List, Right,
-    Body, Icon, Text, Card, CardItem, H3, ListItem, Separator
+    Body, Icon, Text, Card, CardItem, H3, ListItem, Separator, Spinner
 } from 'native-base'
 import { View, StyleSheet, TouchableOpacity, TextInput, TouchableHighlight } from 'react-native'
 import Modal from 'react-native-modal'
@@ -26,7 +26,8 @@ class FeedbackDetail extends Component {
         developersName: [],
         commentList: [],
         commentText: '',
-        status: ''
+        status: '',
+        loading: true
     }
 
     componentDidMount() {
@@ -70,7 +71,10 @@ class FeedbackDetail extends Component {
     getComment = async () => {
         const { issueId } = this.props.route.params
         const res = await comment(issueId)
-        res.ok ? this.setState({ commentList: res.result.comments })
+        res.ok ? this.setState({
+            commentList: res.result.comments,
+            loading: false
+        })
             : console.log(res)
     }
 
@@ -138,7 +142,7 @@ class FeedbackDetail extends Component {
         }
         const res = await change_status(issueId, data)
         if (res.ok) {
-            this.setState({status: !this.state.status})
+            this.setState({ status: !this.state.status })
             this.getIssueContent()
         } else console.log(res)
     }
@@ -266,102 +270,105 @@ class FeedbackDetail extends Component {
 
     render() {
         const { navigation } = this.props
-        const { tagModalVisible, title, content, assignModalVisible, commentModalVisible, status } = this.state
-        return (
-            <Container>
-                <Modal
-                    isVisible={tagModalVisible}
-                    onBackdropPress={() => this.setState({ tagModalVisible: !tagModalVisible })}
-                >
-                    <View style={styles.modalView}>
-                        <List>{this._renderLabelList()}</List>
-                    </View>
-                </Modal>
-                <Modal
-                    isVisible={assignModalVisible}
-                    onBackdropPress={() => this.setState({ assignModalVisible: !assignModalVisible })}
-                >
-                    <View style={styles.modalView}>
-                        <List>{this._renderDeveloper()}</List>
-                    </View>
-                </Modal>
-                <Modal
-                    isVisible={commentModalVisible}
-                    onBackdropPress={() => this.setState({ commentModalVisible: !commentModalVisible })}
-                >
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            multiline
-                            autoFocus
-                            onChangeText={value => this.setState({ commentText: value })}
-                        />
-                        <TouchableHighlight style={styles.sendBtn}
-                            onPress={() => this.sendComment()}
-                        >
-                            <Text style={styles.sendText}>发送</Text>
-                        </TouchableHighlight>
-                    </View>
-                </Modal>
-                <Header style={styles.headerColor}>
-                    <Left>
-                        <Button transparent onPress={() => navigation.goBack()}>
-                            <Icon type="AntDesign" name='arrowleft' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>反馈详情</Title>
-                    </Body>
-                    <Right />
-                </Header>
-                <Content>
-                    <Card transparent>
-                        <CardItem>
-                            <H3>{`${title}：`}</H3>
-                            {this._renderStatusBtn()}
-                        </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text style={styles.textColor}>
-                                    {content}
-                                </Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem style={styles.itemSpacing}>
-                            <Left>
-                                <Button transparent onPress={() => this.setState({ tagModalVisible: true })}>
-                                    <Icon type="MaterialCommunityIcons" name="label-variant-outline" />
-                                    <Text style={styles.textSpacing}>设置标签</Text>
-                                </Button>
-                            </Left>
-                            <Body>
-                                <Button transparent onPress={() => this.setState({ assignModalVisible: true })}>
-                                    <Icon type="EvilIcons" name="user" />
-                                    <Text style={styles.textSpacing}>指定人员</Text>
-                                </Button>
-                            </Body>
-                            <Right>
-                                <Button transparent onPress={() => this.setState({ commentModalVisible: true })}>
-                                    <Icon type="FontAwesome" name="comment-o" />
-                                    <Text style={styles.textSpacing}>评论</Text>
-                                </Button>
-                            </Right>
-                        </CardItem>
-                        <CardItem style={styles.itemSpacing}>
-                            <Text style={styles.textColor}>label:</Text>
-                            {this._renderTags()}
-                        </CardItem>
-                        <CardItem style={styles.itemSpacing}>
-                            <Text style={styles.textColor}>assignees:</Text>
-                            {this._renderAssignees()}
-                        </CardItem>
-                        <Separator bordered>
-                            <Text style={styles.SeparatorText}>用户评论:</Text>
-                        </Separator>
-                    </Card>
-                    {this._renderComment()}
-                </Content>
-            </Container>
-        )
+        const { tagModalVisible, title, content, assignModalVisible, commentModalVisible, loading } = this.state
+        if (loading) return <Spinner color='green' />
+        else {
+            return (
+                <Container>
+                    <Modal
+                        isVisible={tagModalVisible}
+                        onBackdropPress={() => this.setState({ tagModalVisible: !tagModalVisible })}
+                    >
+                        <View style={styles.modalView}>
+                            <List>{this._renderLabelList()}</List>
+                        </View>
+                    </Modal>
+                    <Modal
+                        isVisible={assignModalVisible}
+                        onBackdropPress={() => this.setState({ assignModalVisible: !assignModalVisible })}
+                    >
+                        <View style={styles.modalView}>
+                            <List>{this._renderDeveloper()}</List>
+                        </View>
+                    </Modal>
+                    <Modal
+                        isVisible={commentModalVisible}
+                        onBackdropPress={() => this.setState({ commentModalVisible: !commentModalVisible })}
+                    >
+                        <View style={styles.modalContent}>
+                            <TextInput
+                                multiline
+                                autoFocus
+                                onChangeText={value => this.setState({ commentText: value })}
+                            />
+                            <TouchableHighlight style={styles.sendBtn}
+                                onPress={() => this.sendComment()}
+                            >
+                                <Text style={styles.sendText}>发送</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </Modal>
+                    <Header style={styles.headerColor}>
+                        <Left>
+                            <Button transparent onPress={() => navigation.goBack()}>
+                                <Icon type="AntDesign" name='arrowleft' />
+                            </Button>
+                        </Left>
+                        <Body>
+                            <Title>反馈详情</Title>
+                        </Body>
+                        <Right />
+                    </Header>
+                    <Content>
+                        <Card transparent>
+                            <CardItem>
+                                <H3>{`${title}：`}</H3>
+                                {this._renderStatusBtn()}
+                            </CardItem>
+                            <CardItem>
+                                <Body>
+                                    <Text style={styles.textColor}>
+                                        {content}
+                                    </Text>
+                                </Body>
+                            </CardItem>
+                            <CardItem style={styles.itemSpacing}>
+                                <Left>
+                                    <Button transparent onPress={() => this.setState({ tagModalVisible: true })}>
+                                        <Icon type="MaterialCommunityIcons" name="label-variant-outline" />
+                                        <Text style={styles.textSpacing}>设置标签</Text>
+                                    </Button>
+                                </Left>
+                                <Body>
+                                    <Button transparent onPress={() => this.setState({ assignModalVisible: true })}>
+                                        <Icon type="EvilIcons" name="user" />
+                                        <Text style={styles.textSpacing}>指定人员</Text>
+                                    </Button>
+                                </Body>
+                                <Right>
+                                    <Button transparent onPress={() => this.setState({ commentModalVisible: true })}>
+                                        <Icon type="FontAwesome" name="comment-o" />
+                                        <Text style={styles.textSpacing}>评论</Text>
+                                    </Button>
+                                </Right>
+                            </CardItem>
+                            <CardItem style={styles.itemSpacing}>
+                                <Text style={styles.textColor}>label:</Text>
+                                {this._renderTags()}
+                            </CardItem>
+                            <CardItem style={styles.itemSpacing}>
+                                <Text style={styles.textColor}>assignees:</Text>
+                                {this._renderAssignees()}
+                            </CardItem>
+                            <Separator bordered>
+                                <Text style={styles.SeparatorText}>用户评论:</Text>
+                            </Separator>
+                        </Card>
+                        {this._renderComment()}
+                    </Content>
+                </Container>
+            )
+        }
     }
 }
 
