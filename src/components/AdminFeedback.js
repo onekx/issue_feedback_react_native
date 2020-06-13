@@ -1,19 +1,9 @@
 import React from 'react'
 import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
 import { StyleSheet } from 'react-native'
-import moment from 'moment'
+import LocalTime from './LocalTime'
 
 const ClosedFeedback = ({ name, time, title, navigation, issueId, status }) => {
-    const getLocalTime = (time) => {
-        const localTime = moment.utc(time).toDate()
-        const md = moment(localTime).format('M月D日')
-        const hm = moment(localTime).format('H:mm')
-        return {
-            month: md,
-            hours: hm
-        }
-    }
-
     const checkStatus = (nowStatus) => {
         if (nowStatus === 'opening')
             return <Icon type="FontAwesome" name="exclamation-circle" style={styles.openColor} />
@@ -29,8 +19,8 @@ const ClosedFeedback = ({ name, time, title, navigation, issueId, status }) => {
                     <Text style={styles.textColor}>{name}</Text>
                 </Left>
                 <Right>
-                    <Text style={styles.textColor}>{getLocalTime(time).month}</Text>
-                    <Text style={styles.textColor}>{getLocalTime(time).hours}</Text>
+                    <Text style={styles.textColor}>{LocalTime(time).month}</Text>
+                    <Text style={styles.textColor}>{LocalTime(time).hours}</Text>
                 </Right>
             </CardItem>
             <CardItem button onPress={() => navigation.navigate('adminFeedbackDetail', { issueId: issueId })}>
