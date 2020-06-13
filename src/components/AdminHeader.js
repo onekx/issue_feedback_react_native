@@ -1,5 +1,6 @@
 import React from 'react'
-import { Header, Title, Button, Left, Body, Icon } from 'native-base'
+import { Header, Title, Button, Left, Body, Icon, Right } from 'native-base'
+import DeviceStorage from '../utils/DeviceStorage'
 
 const AdminHeader = ({ navigation, title }) => {
     return (
@@ -9,9 +10,18 @@ const AdminHeader = ({ navigation, title }) => {
                     <Icon name='menu' />
                 </Button>
             </Left>
-            <Body style={{ marginLeft: 60 }}>
+            <Body style={{ marginLeft: 90 }}>
                 <Title>{title}</Title>
             </Body>
+            <Right>
+                <Button transparent onPress={() => {
+                    DeviceStorage.delete('user_id')
+                    DeviceStorage.delete('token')
+                    navigation.navigate('login')
+                }}>
+                    <Icon type="AntDesign" name="logout" style={{ fontSize: 18 }} />
+                </Button>
+            </Right>
         </Header>
     )
 }

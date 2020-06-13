@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Content, Tab, Tabs, Form } from 'native-base'
+import { Container, Content, Tab, Tabs, Form, Text } from 'native-base'
 import { StyleSheet, Picker } from 'react-native'
 import AdminFeedback from '../../components/AdminFeedback'
 import AdminHeader from '../../components/AdminHeader'
@@ -59,19 +59,22 @@ class ManageFeedback extends Component {
     _renderIssues = (issues, status) => {
         const { navigation } = this.props
         const currentIssues = []
-        issues.forEach(value => {
-            currentIssues.push(
-                <AdminFeedback
-                    time={value.created_at}
-                    name={value.owner.nickname}
-                    title={value.title}
-                    navigation={navigation}
-                    issueId={value.issue_id}
-                    status={status}
-                />
-            )
-        })
-        return currentIssues
+        if (issues.length === 0) return <Text note style={{marginLeft:20,marginTop:20,color:'#666'}}>暂时没有反馈</Text>
+        else {
+            issues.forEach(value => {
+                currentIssues.push(
+                    <AdminFeedback
+                        time={value.created_at}
+                        name={value.owner.nickname}
+                        title={value.title}
+                        navigation={navigation}
+                        issueId={value.issue_id}
+                        status={status}
+                    />
+                )
+            })
+            return currentIssues
+        }
     }
 
     componentDidMount() {
@@ -82,7 +85,7 @@ class ManageFeedback extends Component {
         const { navigation } = this.props
         const { selected, refresh, issuesArr, closedIssues } = this.state
         console.disableYellowBox = true
-        if(refresh) this.getIssues()
+        if (refresh) this.getIssues()
         return (
             <Container>
                 <AdminHeader title="管理反馈" navigation={navigation} />
