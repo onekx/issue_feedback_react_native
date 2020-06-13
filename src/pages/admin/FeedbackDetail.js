@@ -9,7 +9,7 @@ import {
     get_tag, set_tag, issue_by_id, assign_issue,
     comment, submit_comment, get_developers, change_status
 } from '../../api/RequestFactory'
-import LocalTime from '../../components/LocalTime'
+import LocalTime from '../../components/common/LocalTime'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class FeedbackDetail extends Component {

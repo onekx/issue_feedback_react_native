@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Container, Content, Tab, Tabs, Form, Text } from 'native-base'
 import { StyleSheet, Picker } from 'react-native'
-import AdminFeedback from '../../components/AdminFeedback'
-import AdminHeader from '../../components/AdminHeader'
+import AdminFeedback from '../../components/admin/AdminFeedback'
+import AdminHeader from '../../components/admin/AdminHeader'
 import { products, feedbacks, feedbacks_closed } from '../../api/RequestFactory'
 
 class ManageFeedback extends Component {

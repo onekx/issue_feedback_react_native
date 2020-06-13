@@ -1,6 +1,6 @@
 import React from 'react'
 import { Header, Title, Button, Left, Body, Icon, Right } from 'native-base'
-import DeviceStorage from '../utils/DeviceStorage'
+import DeviceStorage from '../../utils/DeviceStorage'
 
 const AdminHeader = ({ navigation, title }) => {
     return (

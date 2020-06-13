@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Container, Content, Text, Spinner } from 'native-base'
 import { feedbacks } from '../../api/RequestFactory'
-import FeedbackCard from '../../components/FeedbackCard'
-import HeaderModel from '../../components/HeaderModel'
-import WriteButton from '../../components/WriteButton'
+import FeedbackCard from '../../components/feedback/FeedbackCard'
+import WriteButton from '../../components/feedback/WriteButton'
+import HeaderModel from '../../components/common/HeaderModel'
 
 class Feedbacks extends Component {
     state = {

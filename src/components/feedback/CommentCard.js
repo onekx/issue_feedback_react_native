@@ -7,7 +7,7 @@ const CommentCard = ({name, month, hours, content}) => {
         <Card transparent>
             <CardItem>
                 <Left>
-                    <Thumbnail square small source={require('../images/defaultAvatar.jpg')} />
+                    <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                     <Body>
                         <Text>{name}</Text>
                         <Text note>{`${month}   ${hours}`}</Text>

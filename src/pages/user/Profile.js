@@ -3,7 +3,7 @@ import { Alert, Picker } from 'react-native'
 import { get_profile, update_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import { Container, Content, List, ListItem, Text, Input, Button, Form } from 'native-base'
-import HeaderModel from '../../components/HeaderModel'
+import HeaderModel from '../../components/common/HeaderModel'
 
 export default class Profile extends Component {
     state = {

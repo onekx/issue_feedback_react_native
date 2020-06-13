@@ -3,12 +3,12 @@ import {
     Container, Content, ListItem, Text, Left, Body, Card,
     CardItem, Thumbnail, Icon, Button, Right, Spinner
 } from 'native-base'
-import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback, Alert } from 'react-native'
-import CommentCard from '../../components/CommentCard'
+import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithoutFeedback } from 'react-native'
+import CommentCard from '../../components/feedback/CommentCard'
 import { comment, submit_comment, user_opinion, submit_opinion, issue_by_id } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import LocalTime from '../../components/LocalTime'
-import HeaderModel from '../../components/HeaderModel'
+import LocalTime from '../../components/common/LocalTime'
+import HeaderModel from '../../components/common/HeaderModel'
 
 export default class FeedbackDetails extends Component {
     state = {

@@ -3,7 +3,7 @@ import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Pi
 import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
 import { submit, products } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import HeaderModel from '../../components/HeaderModel'
+import HeaderModel from '../../components/common/HeaderModel'
 
 export default class SubmitFeedback extends Component {
     state = {

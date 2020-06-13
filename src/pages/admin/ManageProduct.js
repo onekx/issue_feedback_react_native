@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Content, Form, Item, Input, Label, ListItem, List, Separator, Text, Left, Right, Body, Button } from 'native-base'
+import { Container, Content, Form, Item, Input, Label, ListItem, List, Separator, Text, Body, Button } from 'native-base'
 import { TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { create } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import AdminHeader from '../../components/AdminHeader'
+import AdminHeader from '../../components/admin/AdminHeader'
 import { products_by_manager, delete_product, update_product } from '../../api/RequestFactory'
 import Modal from 'react-native-modal'
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Spinner } from 'native-base'
-import { products } from '../api/RequestFactory'
+import { products } from '../../api/RequestFactory'
 
 const colors = [
     '#FFB6C1',
