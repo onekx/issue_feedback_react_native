@@ -7,7 +7,7 @@ import { View, StyleSheet, Modal, TouchableHighlight, TextInput, TouchableWithou
 import CommentCard from '../../components/CommentCard'
 import { comment, submit_comment, user_opinion, submit_opinion, issue_by_id } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import moment from 'moment'
+import LocalTime from '../../components/LocalTime'
 import HeaderModel from '../../components/HeaderModel'
 
 export default class FeedbackDetails extends Component {
@@ -129,8 +129,8 @@ export default class FeedbackDetails extends Component {
             commentsArr.push(
                 <CommentCard
                     name={comment.owner.nickname}
-                    month={this.getLocalTime(comment.created_at).month}
-                    hours={this.getLocalTime(comment.created_at).hours}
+                    month={LocalTime(comment.created_at).month}
+                    hours={LocalTime(comment.created_at).hours}
                     content={comment.content}
                 />
             )
@@ -155,16 +155,6 @@ export default class FeedbackDetails extends Component {
             })
             this.getCommentList()
         } else console.log(res)
-    }
-
-    getLocalTime = (time) => {
-        const localTime = moment.utc(time).toDate()
-        const md = moment(localTime).format('M月D日')
-        const hm = moment(localTime).format('H:mm')
-        return {
-            month: md,
-            hours: hm
-        }
     }
 
     render() {
@@ -206,7 +196,7 @@ export default class FeedbackDetails extends Component {
                                     <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                                     <Body>
                                         <Text>{name}</Text>
-                                        <Text note>{`${this.getLocalTime(time).month}   ${this.getLocalTime(time).hours}`}</Text>
+                                        <Text note>{`${LocalTime(time).month}   ${LocalTime(time).hours}`}</Text>
                                     </Body>
                                 </Left>
                             </CardItem>

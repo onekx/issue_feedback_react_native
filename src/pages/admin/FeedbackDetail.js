@@ -9,7 +9,7 @@ import {
     get_tag, set_tag, issue_by_id, assign_issue,
     comment, submit_comment, get_developers, change_status
 } from '../../api/RequestFactory'
-import moment from 'moment'
+import LocalTime from '../../components/LocalTime'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class FeedbackDetail extends Component {
@@ -35,16 +35,6 @@ class FeedbackDetail extends Component {
         this.getIssueContent()
         this.getUnspecifiedDeveloper()
         this.getComment()
-    }
-
-    getLocalTime = (time) => {
-        const localTime = moment.utc(time).toDate()
-        const md = moment(localTime).format('M月D日')
-        const hm = moment(localTime).format('H:mm')
-        return {
-            month: md,
-            hours: hm
-        }
     }
 
     // 获取该 issue 的详细信息
@@ -248,7 +238,7 @@ class FeedbackDetail extends Component {
         if (commentList.length === 0) return <Text>目前还没有评论</Text>
         else {
             commentList.forEach(comment => {
-                let time = this.getLocalTime(comment.created_at)
+                let time = LocalTime(comment.created_at)
                 comments.push(
                     <Card transparent>
                         <CardItem>

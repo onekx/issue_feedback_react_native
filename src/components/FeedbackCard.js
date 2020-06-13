@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon, Item } from 'native-base'
 import { StyleSheet } from 'react-native'
-import moment from 'moment'
+import LocalTime from '../components/LocalTime'
 
 const likeColor = '#0099CC'
 const dislikeColor = '#FF6666'
@@ -13,19 +13,8 @@ export default class FeedbackCard extends Component {
         dislike: 0
     }
 
-    getLocalTime = () => {
-        const { time } = this.props
-        const localTime = moment.utc(time).toDate()
-        const md = moment(localTime).format('M月D日')
-        const hm = moment(localTime).format('H:mm')
-        return {
-            month: md,
-            hours: hm
-        }
-    }
-
     render() {
-        const { title, navigation, userName, likes, dislikes, issueId, description } = this.props
+        const { title, navigation, userName, likes, dislikes, issueId, time } = this.props
         return (
             <Card>
                 <CardItem header
@@ -35,8 +24,8 @@ export default class FeedbackCard extends Component {
                         <Text>{userName}</Text>
                     </Left>
                     <Right>
-                        <Text note>{this.getLocalTime().month}</Text>
-                        <Text note>{this.getLocalTime().hours}</Text>
+                        <Text note>{LocalTime(time).month}</Text>
+                        <Text note>{LocalTime(time).hours}</Text>
                     </Right>
                 </CardItem>
                 <CardItem
