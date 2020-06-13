@@ -66,6 +66,12 @@ export const submit_comment = async (data) => {
     return result
 }
 
+// 用户投票
+export const submit_opinion = async (id, data) => {
+    const result = await BaseRequest(`/issue/${id}/vote`, data, 'PUT')
+    return result
+}
+
 // 管理人员给反馈打标签
 export const set_tag= async (id, data) => {
     const result = await BaseRequest(`/issue/${id}/tag`, data, 'PUT')
@@ -117,5 +123,11 @@ export const change_status = async (id, data) => {
 // 更新产品信息
 export const update_product = async (id, data) => {
     const result = await BaseRequest(`/product/${id}`, data, 'PUT')
+    return result
+}
+
+// 获取用户对该反馈的意见
+export const user_opinion = async (issueId, userId) => {
+    const result = await BaseRequest(`/issue/${issueId}/user/${userId}/opinion`)
     return result
 }

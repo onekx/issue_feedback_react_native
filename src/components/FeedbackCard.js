@@ -43,13 +43,7 @@ export default class FeedbackCard extends Component {
                     button
                     style={styles.noPadding}
                     onPress={() =>
-                        navigation.navigate('feedbackDetails', {
-                            name: userName,
-                            md: this.getLocalTime().month,
-                            hm: this.getLocalTime().hours,
-                            content: description,
-                            id: issueId,
-                        })}
+                        navigation.navigate('feedbackDetails', { id: issueId })}
                 >
                     <Body>
                         <Text numberOfLines={1}>
