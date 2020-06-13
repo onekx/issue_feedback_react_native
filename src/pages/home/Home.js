@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Container, Content, Header, Icon, Left, Body, Right, Thumbnail, Text, Button } from 'native-base'
 import { Image, DeviceEventEmitter, StyleSheet, View, Modal, TouchableOpacity } from 'react-native'
-import ProductList from '../../components/ProductList'
+import ProductList from '../../components/home/ProductList'
 import { get_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
-import WriteButton from '../../components/WriteButton'
+import WriteButton from '../../components/feedback/WriteButton'
 
 export default class Home extends Component {
     state = {

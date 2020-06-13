@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import { register } from '../../api/RequestFactory'
-import TimerButton from '../../components/TimerButton'
-import AccountButton from '../../components/AccountButton'
+import TimerButton from '../../components/account/TimerButton'
+import AccountButton from '../../components/account/AccountButton'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class Register extends Component {

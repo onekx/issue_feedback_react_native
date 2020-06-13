@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
 import { StyleSheet } from 'react-native'
-import LocalTime from './LocalTime'
+import LocalTime from '../common/LocalTime'
 
 const ClosedFeedback = ({ name, time, title, navigation, issueId, status }) => {
     const checkStatus = (nowStatus) => {

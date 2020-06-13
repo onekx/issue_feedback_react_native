@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, CardItem, Thumbnail, Text, Left, Body, Right, Icon, Item } from 'native-base'
 import { StyleSheet } from 'react-native'
-import LocalTime from '../components/LocalTime'
+import LocalTime from '../common/LocalTime'
 
 const likeColor = '#0099CC'
 const dislikeColor = '#FF6666'
@@ -20,7 +20,7 @@ export default class FeedbackCard extends Component {
                 <CardItem header
                     style={styles.noPadding}>
                     <Left>
-                        <Thumbnail square small source={require('../images/defaultAvatar.jpg')} />
+                        <Thumbnail square small source={require('../../images/defaultAvatar.jpg')} />
                         <Text>{userName}</Text>
                     </Left>
                     <Right>

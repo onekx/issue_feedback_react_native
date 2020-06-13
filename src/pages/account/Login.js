@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native'
 import { login } from '../../api/RequestFactory'
-import AccountButton from '../../components/AccountButton'
+import AccountButton from '../../components/account/AccountButton'
 import DeviceStorage from '../../utils/DeviceStorage'
 
 class Login extends Component {
