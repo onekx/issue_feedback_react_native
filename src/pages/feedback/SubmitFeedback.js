@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Picker } from 'native-base'
-import { View, TouchableOpacity, Text, StyleSheet, Alert, DeviceEventEmitter } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native'
 import { submit, products } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import HeaderModel from '../../components/common/HeaderModel'
@@ -48,7 +48,6 @@ export default class SubmitFeedback extends Component {
         const res = await submit(data)
         if (res.ok) {
             navigation.goBack()
-            DeviceEventEmitter.emit('refresh', true)
         } else Alert.alert('提交失败!')
     }
 

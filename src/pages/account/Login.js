@@ -30,7 +30,7 @@ class Login extends Component {
                 break;
             default:
                 this.clearInput()
-                navigation.navigate('home')
+                navigation.navigate('main')
         }
     }
 

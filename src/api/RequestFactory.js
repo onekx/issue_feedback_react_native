@@ -131,3 +131,9 @@ export const user_opinion = async (issueId, userId) => {
     const result = await BaseRequest(`/issue/${issueId}/user/${userId}/opinion`)
     return result
 }
+
+// 获取用户提出的反馈
+export const user_feedbacks = async (userId) => {
+    const result = await BaseRequest(`/issue/owner/${userId}`)
+    return result
+}

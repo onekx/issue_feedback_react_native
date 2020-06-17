@@ -44,15 +44,16 @@ export default class FeedbackDetails extends Component {
             : console.log(res)
     }
 
-    getIssueStatistics = () => {
+    getIssueStatistics = async () => {
         const { id } = this.props.route.params
         const url = 'http://192.168.154.131:8923/service/v1/issue'
-        fetch(`${url}/${id}/statistics`)
-            .then(res => res.json())
-            .then(res => this.setState({
+        const res = await fetch(`${url}/${id}/statistics`).then(res => res.json())
+        res.ok
+            ? this.setState({
                 likeCount: res.result.likes,
                 dislikeCount: res.result.dislikes
-            }))
+            })
+            : console.log(res)
     }
 
     getCommentList = async () => {
@@ -158,7 +159,7 @@ export default class FeedbackDetails extends Component {
     }
 
     render() {
-        const { route, navigation } = this.props
+        const { navigation } = this.props
         const { modalVisible, likeColor, dislikeColor, loading, name, description, time, likeCount, dislikeCount } = this.state
         if (loading) return <Spinner color='green' />
         else {
