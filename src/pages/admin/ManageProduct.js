@@ -74,7 +74,7 @@ class ManageProduct extends Component {
         const productsList = []
         products.forEach(item => {
             productsList.push(
-                <ListItem avatar>
+                <ListItem avatar style={{ borderBottomWidth: .5 }}>
                     <Body>
                         <Text style={styles.proText}>{item.name}</Text>
                         <Text note>{item.description}</Text>

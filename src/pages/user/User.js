@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { Container, Content, Text, Thumbnail, Icon, Header, Right, Button, Separator, Tab, Tabs } from 'native-base'
+import { Container, Content, Text, Thumbnail, Icon, Header, Right, Button, Tab, Tabs } from 'native-base'
 import { View, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import { get_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
+import OpeningFeedbacks from '../../components/user/OpeningFeedback'
+import ClosedFeedbacks from '../../components/user/ClosedFeedback'
 
 export default class User extends Component {
     state = {
@@ -91,32 +93,18 @@ export default class User extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    {/* <View style={styles.divide} />
-                    <View style={styles.tab}>
-                        <View style={styles.tabAlign}>
-                            <Text style={styles.text}>反馈</Text>
-                            <Text style={styles.number}>0</Text>
-                        </View>
-                    </View>
-                    <View style={styles.divide} /> */}
-
-                    {/* <Separator bordered>
-                        <Text style={{ fontSize: 13 }}>我的反馈</Text>
-                    </Separator> */}
-
                     <Tabs>
                         <Tab heading="待解决"
                             tabStyle={{ backgroundColor: '#6699CC' }}
                             activeTabStyle={{ backgroundColor: '#6699CC' }}
                         >
-                            <Text>待解决</Text>
+                            <OpeningFeedbacks navigation={navigation} />
                         </Tab>
                         <Tab heading="已关闭"
                             tabStyle={{ backgroundColor: '#6699CC' }}
                             activeTabStyle={{ backgroundColor: '#6699CC' }}
                         >
-                            <Text>已关闭</Text>
+                            <ClosedFeedbacks navigation={navigation} />
                         </Tab>
                     </Tabs>
                 </Content>

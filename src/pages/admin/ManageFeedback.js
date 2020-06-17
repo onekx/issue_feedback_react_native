@@ -59,7 +59,7 @@ class ManageFeedback extends Component {
     _renderIssues = (issues, status) => {
         const { navigation } = this.props
         const currentIssues = []
-        if (issues.length === 0) return <Text note style={{marginLeft:20,marginTop:20,color:'#666'}}>暂时没有反馈</Text>
+        if (issues.length === 0) return <Text note style={{ marginLeft: 20, marginTop: 20, color: '#666' }}>暂时没有反馈</Text>
         else {
             issues.forEach(value => {
                 currentIssues.push(
