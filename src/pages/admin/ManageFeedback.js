@@ -105,7 +105,6 @@ class ManageFeedback extends Component {
                         <Tab heading="待解决"
                             tabStyle={{ backgroundColor: '#336699' }}
                             activeTabStyle={{ backgroundColor: '#336699' }}
-
                         >
                             {this._renderIssues(issuesArr, 'opening')}
                         </Tab>
