@@ -11,6 +11,7 @@ import FeedbackDetails from '../pages/feedback/FeedbackDetails'
 import Feedbacks from '../pages/feedback/Feedbacks'
 import FeedbackDetail from '../pages/admin/FeedbackDetail'
 import ManageFeedback from '../pages/admin/ManageFeedback'
+import DevelopHome from '../pages/developer/DevelopHome'
 
 const Stack = createStackNavigator()
 
@@ -28,6 +29,7 @@ const App = () => {
                 <Stack.Screen name="feedbacks" component={Feedbacks} />
                 <Stack.Screen name="manageFeedback" component={ManageFeedback} />
                 <Stack.Screen name="adminFeedbackDetail" component={FeedbackDetail} />
+                <Stack.Screen name="developHome" component={DevelopHome} />
             </Stack.Navigator>
         </NavigationContainer>
     )

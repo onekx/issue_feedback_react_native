@@ -3,7 +3,7 @@ import { Card, CardItem, Text, Icon, Right, Left } from 'native-base'
 import { StyleSheet } from 'react-native'
 import LocalTime from '../common/LocalTime'
 
-const ClosedFeedback = ({ name, time, title, navigation, issueId, status }) => {
+const AdminFeedback = ({ name, time, title, navigation, issueId, status }) => {
     const checkStatus = (nowStatus) => {
         if (nowStatus === 'opening')
             return <Icon type="FontAwesome" name="exclamation-circle" style={styles.openColor} />
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ClosedFeedback
+export default AdminFeedback
