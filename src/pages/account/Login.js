@@ -26,7 +26,7 @@ class Login extends Component {
                 break;
             case 'DEVELOPER':
                 this.clearInput()
-                navigation.navigate('adminNavigation')
+                navigation.navigate('developHome')
                 break;
             default:
                 this.clearInput()
