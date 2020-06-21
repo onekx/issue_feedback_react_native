@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Content, Text, Thumbnail, Icon, Header, Right, Button, Tab, Tabs, Spinner } from 'native-base'
-import { View, TouchableOpacity, StyleSheet, Modal } from 'react-native'
+import {
+    Container, Content, Text, Thumbnail, Icon, Header, Form,
+    Right, Button, Tab, Tabs, Spinner, List, ListItem, Input
+} from 'native-base'
+import { View, TouchableOpacity, StyleSheet, Modal, Alert, Picker } from 'react-native'
 import { get_profile, update_profile } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import OpeningFeedbacks from '../../components/user/OpeningFeedback'
@@ -15,19 +18,45 @@ export default class User extends Component {
         avatar: '',
         modalVisible: false,
         avatarModal: false,
-        loading: true
+        profileModal: false,
+        loading: true,
+        selected: "female",
+        inputNickname: ''
     }
 
     getProfile = async () => {
         const userId = await DeviceStorage.get("user_id")
         const res = await get_profile(userId)
-        res.ok ? this.setState({
-            nickName: res.result.nickname,
-            gender: res.result.gender,
-            avatar: res.result.avatar,
-            loading: false
-        })
-            : console.log(res)
+        if (res.ok) {
+            this.setState({
+                nickName: res.result.nickname,
+                gender: res.result.gender,
+                avatar: res.result.avatar,
+                loading: false
+            })
+            if (this.state.gender === 0)
+                this.setState({ selected: 'male' })
+        }
+        else console.log(res)
+    }
+
+    updateNickName = async () => {
+        const { inputNickname } = this.state
+        const userId = await DeviceStorage.get("user_id")
+        const data = { "nickname": inputNickname }
+        const res = await update_profile(userId, data)
+        res.ok ? Alert.alert('修改成功！')
+            : Alert.alert('修改失败！')
+    }
+
+    updateGender = async (value) => {
+        this.setState({ selected: value })
+        const userId = await DeviceStorage.get("user_id")
+        const data = { "gender": 1 }
+        if (this.state.selected === 'male') data.gender = 0
+        const res = await update_profile(userId, data)
+        res.ok ? Alert.alert('修改成功！')
+            : Alert.alert('修改失败！')
     }
 
     updateAvatar = async (avaName) => {
@@ -79,7 +108,7 @@ export default class User extends Component {
     }
 
     render() {
-        const { nickName, modalVisible, avatarModal, loading } = this.state
+        const { nickName, modalVisible, avatarModal, loading, selected, profileModal } = this.state
         const { navigation } = this.props
         if (loading) return <Spinner color='green' />
         else {
@@ -132,6 +161,57 @@ export default class User extends Component {
                             </View>
                         </View>
                     </Modal>
+                    <Modal
+                        transparent={true}
+                        visible={profileModal}
+                        onRequestClose={() => this.setState({ profileModal: false })}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.profileView}>
+                                <TouchableOpacity onPress={() => {
+                                    this.setState({ profileModal: false })
+                                    this.getProfile()
+                                }}
+                                    style={styles.closeProfile}
+                                >
+                                    <Text style={{fontSize: 20}}>×</Text>
+                                </TouchableOpacity>
+                                <List>
+                                    <ListItem>
+                                        <Text>昵称：</Text>
+                                        <Input
+                                            placeholder={nickName}
+                                            onChangeText={value =>
+                                                this.setState({
+                                                    inputNickname: value
+                                                })}
+                                            style={{ borderBottomWidth: 1, borderBottomColor: '#000' }} />
+                                        <Button
+                                            style={{ height: 30 }}
+                                            onPress={() => this.updateNickName()}
+                                        >
+                                            <Text>确认</Text>
+                                        </Button>
+                                    </ListItem>
+                                    <ListItem>
+                                        <Text>性别：</Text>
+                                        <Form>
+                                            <Picker
+                                                note
+                                                mode="dialog"
+                                                style={{ width: 50, marginLeft: 50 }}
+                                                selectedValue={selected}
+                                                onValueChange={this.updateGender}
+                                            >
+                                                <Picker.Item label="女" value="female" />
+                                                <Picker.Item label="男" value="male" />
+                                            </Picker>
+                                        </Form>
+                                    </ListItem>
+                                </List>
+                            </View>
+                        </View>
+                    </Modal>
                     <Header style={{ backgroundColor: '#fff' }}>
                         <Right>
                             <Button transparent
@@ -147,7 +227,7 @@ export default class User extends Component {
                                 <TouchableOpacity activeOpacity={0.8} onPress={() => this.setState({ avatarModal: true })}>
                                     {this.showAvatar()}
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.nameGender} onPress={() => navigation.navigate('profile')}>
+                                <TouchableOpacity style={styles.nameGender} onPress={() => this.setState({ profileModal: true })}>
                                     <Text style={styles.nickName}>{nickName}</Text>
                                     {this.checkGender()}
                                 </TouchableOpacity>
@@ -255,5 +335,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 5
+    },
+    profileView: {
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        justifyContent: 'space-around',
+        width: 300
+    },
+    closeProfile: {
+        flexDirection: 'row',
+        justifyContent:'flex-end',
+        paddingRight:15
     }
 })

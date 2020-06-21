@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Header, Content, Tab, Tabs, Text, Button, Icon, Right, Title, Body, Left, List, ListItem } from 'native-base'
+import { Container, Header, Tab, Tabs, Text, Button, Icon, Right, Body, Left, List, ListItem } from 'native-base'
 import DeviceStorage from '../../utils/DeviceStorage'
 import LocalTime from '../../components/common/LocalTime'
 
