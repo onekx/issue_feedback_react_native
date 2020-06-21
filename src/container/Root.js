@@ -5,7 +5,6 @@ import Admin from './Admin'
 import UserNav from './UserNav'
 import Login from '../pages/account/Login'
 import Register from '../pages/account/Register'
-import Profile from '../pages/user/Profile'
 import SubmitFeedback from '../pages/feedback/SubmitFeedback'
 import FeedbackDetails from '../pages/feedback/FeedbackDetails'
 import Feedbacks from '../pages/feedback/Feedbacks'
@@ -24,7 +23,6 @@ const App = () => {
                 <Stack.Screen name="registration" component={Register} />
                 <Stack.Screen name="main" component={UserNav} />
                 <Stack.Screen name="submitFeedback" component={SubmitFeedback} />
-                <Stack.Screen name="profile" component={Profile} />
                 <Stack.Screen name="feedbackDetails" component={FeedbackDetails} />
                 <Stack.Screen name="feedbacks" component={Feedbacks} />
                 <Stack.Screen name="manageFeedback" component={ManageFeedback} />
