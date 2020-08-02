@@ -3,7 +3,9 @@ import { Container, Content, Tab, Tabs, Form, Text } from 'native-base'
 import { StyleSheet, Picker } from 'react-native'
 import AdminFeedback from '../../components/admin/AdminFeedback'
 import AdminHeader from '../../components/admin/AdminHeader'
-import { products, feedbacks, feedbacks_closed } from '../../api/RequestFactory'
+import { feedbacks, feedbacks_closed } from '../../api/RequestFactory'
+import { connect } from 'react-redux'
+import { mapStateToProps, mapDispatchToProps } from '../../store/actionCreators'
 
 class ManageFeedback extends Component {
     state = {
@@ -24,9 +26,9 @@ class ManageFeedback extends Component {
     }
 
     getProducts = async () => {
-        const res = await products()
-        const nameArr = res.result.products.map(value => (value.name))
-        const idArr = res.result.products.map(value => (value.product_id))
+        const { products } = this.props
+        const nameArr = products.map(value => (value.name))
+        const idArr = products.map(value => (value.product_id))
         this.setState({
             productsName: nameArr,
             productsId: idArr
@@ -82,10 +84,13 @@ class ManageFeedback extends Component {
     }
 
     render() {
-        const { navigation } = this.props
+        const { navigation, updateProducts } = this.props
         const { selected, refresh, issuesArr, closedIssues } = this.state
         console.disableYellowBox = true
-        if (refresh) this.getIssues()
+        if (refresh) {
+            this.getIssues()
+            updateProducts()
+        }
         return (
             <Container>
                 <AdminHeader title="管理反馈" navigation={navigation} />
@@ -129,4 +134,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ManageFeedback
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ManageFeedback)

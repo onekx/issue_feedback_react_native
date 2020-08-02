@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Spinner } from 'native-base'
-import { products } from '../../api/RequestFactory'
+import { connect } from 'react-redux'
+import { mapDispatchToProps, mapStateToProps } from '../../store/actionCreators'
 
 const colors = [
     '#FFB6C1',
@@ -17,26 +18,18 @@ const colors = [
 ]
 
 class ProductList extends Component {
-    state = {
-        products: [],
-        hidden: true
-    }
+    state = { hidden: true }
 
     // 请求获取所有产品
     getProducts = async () => {
-        const res = await products()
-        res.ok
-            ? this.setState({
-                products: res.result.products,
-                hidden: false
-            })
-            : console.log(res)
+        const { updateProducts } = this.props
+        updateProducts()
+        this.setState({ hidden: false })
     }
 
     // 返回保存所有产品的数组
     productsList = () => {
-        const { navigation } = this.props
-        const { products } = this.state
+        const { navigation, products } = this.props
         const content = []
         products.forEach((product, index) => {
             content.push(
@@ -102,4 +95,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ProductList
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProductList)

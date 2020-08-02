@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Container, Content, ListItem, Label, Left, Input, Right, Item, Form, Picker } from 'native-base'
 import { View, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native'
-import { submit, products } from '../../api/RequestFactory'
+import { submit } from '../../api/RequestFactory'
 import DeviceStorage from '../../utils/DeviceStorage'
 import HeaderModel from '../../components/common/HeaderModel'
+import { connect } from 'react-redux'
+import { mapStateToProps, mapDispatchToProps } from '../../store/actionCreators'
 
-export default class SubmitFeedback extends Component {
+class SubmitFeedback extends Component {
     state = {
         selected: 0,
         productsName: [],
@@ -14,12 +16,12 @@ export default class SubmitFeedback extends Component {
         description: ''
     }
 
-    onValueChange = (value) => this.setState({selected: value})
+    onValueChange = (value) => this.setState({ selected: value })
 
-    getProducts = async () => {
-        const res = await products()
-        const nameArr = res.result.products.map(value => (value.name))
-        const idArr = res.result.products.map(value => (value.product_id))
+    getProducts = () => {
+        const { products } = this.props
+        const nameArr = products.map(value => (value.name))
+        const idArr = products.map(value => (value.product_id))
         this.setState({
             productsName: nameArr,
             productsId: idArr
@@ -141,3 +143,8 @@ const styles = StyleSheet.create({
         color: '#575757'
     }
 })
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SubmitFeedback)
